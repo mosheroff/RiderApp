@@ -1,0 +1,87 @@
+Age 35 & older:	APPLICANT MUST BE 35 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENT AND /OR 3 TICKETS IN THE LAST THREE YEARS												
+Displacement	P1	P2	P3		"Limits of Liability
+Applicable with P1, P2, & P3"					"Limits of Liability
+Liablity Only"			
+(CC's)	2015 & 2014	2013 & 2012	2011 & older 		25/50/25	50/100/25	100/300/50	250/500/100		25/50/25	50/100/25	100/300/50	250/500/100
+1-370	126	72	56		62	87	104	114		77	102	119	129
+371-575	145	82	64		83	115	139	153		102	134	158	172
+576-750	223	124	98		101	140	165	185		123	162	187	207
+751-950	257	143	113		124	173	207	229		154	203	237	259
+951-1210	403	224	178		149	212	251	279		185	248	287	315
+1211-1400	447	248	197		177	248	294	327		217	288	334	367
+1401 & Over	475	264	209		179	250	297	330		219	290	337	370
+Mopeds	N/A				N/A					23	27	32	34
+													
+Age 30-34:	APPLICANT MUST BE 30 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENT AND /OR 3 TICKETS IN THE LAST THREE YEARS												
+Displacement	P1	P2	P3		"Limits of Liability
+Applicable with P1, P2, & P3"					"Limits of Liability
+Liablity Only"			
+(CC's)	2015 & 2014	2013 & 2012	2011 & older 		25/50/25	50/100/25	100/300/50	250/500/100		25/50/25	50/100/25	100/300/50	250/500/100
+1-370	154	88	68		65	92	109	121		80	107	124	136
+371-575	178	102	79		89	123	147	164		108	142	166	183
+576-750	273	153	121		107	148	176	196		129	170	198	218
+751-950	315	176	139		132	185	220	244		162	215	250	274
+951-1210	495	275	218		159	223	266	296		195	259	302	332
+1211-1400	548	304	242		188	263	312	347		228	303	352	387
+1401 & Over	582	323	256		190	266	316	350		230	306	356	390
+Mopeds	N/A				N/A					24	29	33	37
+													
+Age 26-29:	APPLICANT MUST BE 26 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENTS AND /OR 3 TICKETS IN THE LAST THREE YEARS												
+Displacement	P1	P2	P3		"Limits of Liability
+Applicable with P1, P2, & P3"					"Limits of Liability
+Liablity Only"			
+(CC's)	2015 & 2014	2013 & 2012	2011 & older 		25/50/25	50/100/25	100/300/50	250/500/100		25/50/25	50/100/25	100/300/50	250/500/100
+1-370	168	96	74		70	100	118	132		85	115	133	147
+371-575	194	111	86		96	134	159	176		115	153	178	195
+576-750	297	166	130		116	161	191	212		138	183	213	234
+751-950	342	191	150		143	200	238	265		173	230	268	295
+951-1210	537	298	236		172	243	289	321		208	279	325	357
+1211-1400	595	331	262		204	285	338	376		244	325	378	416
+1401 & Over	631	351	278		207	288	342	379		247	328	382	419
+Mopeds	N/A				N/A					26	31	36	40
+													
+													
+Age 21-25:	APPLICANT MUST BE 21 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENT AND /OR 2 TICKETS IN THE LAST THREE YEARS												
+Displacement	P1	P2	P3		"Limits of Liability
+Applicable with P1, P2, & P3"					"Limits of Liability
+Liablity Only"			
+(CC's)	2015 & 2014	2013 & 2012	2011 & older 		25/50/25	50/100/25	100/300/50	250/500/100		25/50/25	50/100/25	100/300/50	250/500/100
+1-370	457	262	200		207	292	348	386		222	307	363	401
+371-575	529	301	232		281	393	467	518		300	412	486	537
+576-750	809	453	356		339	472	561	622		361	494	583	644
+751-950	931	519	410		415	586	699	776		445	616	729	806
+951-1210	1462	813	644		505	712	848	942		541	748	884	978
+1211-1400	1620	900	713		599	834	994	1102		639	874	1034	1142
+1401 & Over	1720	955	757		605	844	1005	1115		645	884	1045	1155
+Mopeds	N/A				N/A					77	91	107	117
+													
+Age 20 & under:	#REF!												
+Displacement	P1	P2	P3		"Limits of Liability
+Applicable with P1, P2, & P3"					"Limits of Liability
+Liablity Only"			
+(CC's)	2015 & 2014	2013 & 2012	2011 & older 		25/50/25	50/100/25	100/300/50	250/500/100		25/50/25	50/100/25	100/300/50	250/500/100
+1-370	741	423	325		360	508	606	671		375	523	621	686
+371-575	859	487	377		490	683	812	902		509	702	831	921
+576-750	1317	736	580		590	820	977	1083		612	842	999	1105
+751-950	1518	845	669		723	1021	1217	1351		753	1051	1247	1381
+951-1210	2382	1325	1049		878	1237	1476	1639		914	1273	1512	1675
+1211-1400	2643	1467	1164		1040	1452	1729	1918		1080	1492	1769	1958
+1401 & Over	2806	1557	1235		1053	1469	1748	1940		1093	1509	1788	1980
+N/A					N/A					134	158	186	203
+													
+AVAILABLE COVERAGES						DISCOUNTS							
+Basic Package: Includes Liability coverage with the limits of your choice without UM/UIM*.						"? A 25% PREFERRED OPERATOR DISCOUNTapplies to all applicants with a motorcycle driver license, age 26 and over, with a clean driving record, insuring a non-sport / non-high performance motorcycle, 576cc and over, with the Standard Plus or Premium Packages. "							
+													
+Call or go online for rates.													
+"Standard Package:  Includes Liability coverage with the limits of your choice with UM/UIM*.
+"													
+"Standard Plus Package:  Includes Liability coverage with the limit of your choice, UM/UIM and Comprehensive (including fire and theft) without Collision coverage."						? A 10% TRANSFER DISCOUNT applies to all applicants with a non-sport / non-high performance bike transferring coverage from another insurance company to Rider with no more than a 30-day lapse in coverage.							
+"Premium Packages: Includes Liability coverage with increased limits of your choice, UM/UIM and Comprehensive (including fire and theft) with Collision coverage.
+"													
+						? A 10% MULTIPLE BIKE DISCOUNT applies to all applicants who have more than one covered vehicle on their policy at the same time.							
+Call or go online for rates.													
+*UM/UIM - Uninsured Motorist Coverage / Underinsured Motorist Coverage						"**A clean driving record is defined as no moving violations that carry motor vehicle points and are not drug or alcohol related, and no at-fault accidents in the past three years. Rider offers Accident and Ticket Forgiveness for a minor violation (1 two-point violation) or accident (1 at-fault accident with a payout of less than $2000)."							
+Rates are based on a $500 deductible.													
+													
+"Effective 3/1/2015 NB  4/1/2015 RN
+"													

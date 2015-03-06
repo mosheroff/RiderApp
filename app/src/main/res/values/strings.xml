@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">RiderQuote</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="validStates">
+        <item>DE</item>
+        <item>IN</item>
+        <item>MD</item>
+        <item>MI</item>
+        <item>NJ</item>
+        <item>OH</item>
+        <item>PA</item>
+        <item>VA</item>
+        <item>WV</item>
+    </string-array>
+
+    <string-array name="validYears">
+    </string-array>
+
+    <string-array name="validMakes">
+    </string-array>
+
+    <string-array name = "validModels">
+    </string-array>
+
+    <string-array name = "dialogCities">
+    </string-array>
+
+</resources>
