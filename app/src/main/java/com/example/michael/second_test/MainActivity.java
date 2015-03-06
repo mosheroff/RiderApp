@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.provider.Telephony;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -80,6 +82,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public RadioButton male;
     public RadioButton married;
     public RadioButton fullcoverage;
+    public CheckBox transferDisc;
+    public CheckBox multiBikeDisc;
+    public CheckBox podDisc;
     public EditText eventText;
     public File saveFile;
 
@@ -102,6 +107,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         male = (RadioButton) this.findViewById(R.id.Male);
         married = (RadioButton) this.findViewById(R.id.Married);
         fullcoverage = (RadioButton) this.findViewById(R.id.FullCoverage);
+        transferDisc = (CheckBox) this.findViewById(R.id.transferDisc);
+        multiBikeDisc = (CheckBox) this.findViewById(R.id.multiBikeDisc);
+        podDisc = (CheckBox) this.findViewById(R.id.podDisc);
 
 
         eventName = setEventName();
@@ -124,8 +132,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 birthdayButton.setText(dateFormatter.format(newDate.getTime()));
             }
 
-        },mYear,mMonth,mDay);
-        c.add(c.DAY_OF_YEAR,-(365*18));
+        }, mYear, mMonth, mDay);
+        c.add(c.DAY_OF_YEAR, -(365 * 18));
         datePicker.getDatePicker().setMaxDate(c.getTimeInMillis());
 
         birthdayButton.setOnClickListener(new View.OnClickListener() {
@@ -141,13 +149,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     onEnter();
-                    InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(
+                    InputMethodManager imm = (InputMethodManager) getBaseContext().getSystemService(
                             getBaseContext().INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(zipCode.getWindowToken(),
                             InputMethodManager.RESULT_UNCHANGED_SHOWN);
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
@@ -155,10 +162,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
 
 //      Model Year Entry - set-up
-        ArrayAdapter<String> myYearAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_spinner_item, android.R.id.text1);
+        ArrayAdapter<String> myYearAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
         myYearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        myMakeAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_spinner_item, android.R.id.text1);
+        myMakeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
         myMakeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modelMakes.setAdapter(myMakeAdapter);
 
@@ -170,11 +177,11 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         ArrayList<String> validYears = new ArrayList<String>();
 
-        for (String line:vehiclesList) {
+        for (String line : vehiclesList) {
             String[] list = line.split(tabchar);
             tyear = list[5];
             if (validYears.contains(tyear) == false) {
-                    validYears.add(tyear);
+                validYears.add(tyear);
             }
         }
 
@@ -184,17 +191,17 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         myYearAdapter.notifyDataSetChanged();
 
 //      Model Year Entry
-        modelYears.setSelection(0,false);
+        modelYears.setSelection(0, false);
         modelYears.setOnItemSelectedListener(this);
 
 
 //      Model Make Entry
-        modelMakes.setSelection(0,false);
+        modelMakes.setSelection(0, false);
         modelMakes.setOnItemSelectedListener(this);
 
 
 //      Model Model Entry
-        modelModels.setSelection(0,false);
+        modelModels.setSelection(0, false);
         modelModels.setOnItemSelectedListener(this);
 
 //      State Entry
@@ -205,8 +212,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
 
-               final ArrayList<String> ratePage = getRatePage();
-               calculateRates(ratePage);
+                final ArrayList<String> ratePage = getRatePage();
+                calculateRates(ratePage);
             }
         });
 
@@ -214,43 +221,43 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         submitEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 Toast toast = Toast.makeText(getApplicationContext(),
-                       "Feature not implemented yet.", Toast.LENGTH_SHORT);
-                 toast.show();
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Feature not implemented yet.", Toast.LENGTH_SHORT);
+                toast.show();
 
             }
 
         });
 
-
     }
-     @Override
-     public boolean onCreateOptionsMenu(Menu menu) {
-         // Inflate the menu; this adds items to the action bar if it is present.
-         getMenuInflater().inflate(R.menu.menu_main, menu);
-         return true;
-     }
 
-     @Override
-     public boolean onOptionsItemSelected(MenuItem item) {
-         // Handle action bar item clicks here. The action bar will
-         // automatically handle clicks on the Home/Up button, so long
-         // as you specify a parent activity in AndroidManifest.xml.
-         int id = item.getItemId();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-         //noinspection SimplifiableIfStatement
-         if (id == R.id.action_settings) {
-             return true;
-         }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-         return super.onOptionsItemSelected(item);
-     }
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 
     //Utility Stuff Down Here
 
-//  Get Vehicle File
-    private ArrayList<String> getVehicleMaster(){
+    //  Get Vehicle File
+    private ArrayList<String> getVehicleMaster() {
         BufferedReader vehiclefile = new BufferedReader(new InputStreamReader(
                 getResources().openRawResource(R.raw.vehicle_master_data_tab)));
 
@@ -261,15 +268,14 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             while ((line = vehiclefile.readLine()) != null) {
                 vehicles.add(line);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return vehicles;
     }
 
-//  Get Main Rate File
+    //  Get Main Rate File
     private ArrayList<String> getRatePage() {
 
         rateFileKey = "raw/" + RateState.toLowerCase() + "_t" + terrNum.toLowerCase();
@@ -277,17 +283,16 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         if (bikeType.toLowerCase().equals("sport")) {
             rateBikeType = "_sport";
-        }
-        else {
+        } else {
             rateBikeType = "_ns";
         }
 
         rateFileKey = rateFileKey.concat(rateBikeType);
 
         BufferedReader rateFile = new BufferedReader(new InputStreamReader(
-                getResources().openRawResource(getResources().getIdentifier(rateFileKey,"raw",getPackageName()))
+                getResources().openRawResource(getResources().getIdentifier(rateFileKey, "raw", getPackageName()))
 
-        ))  ;
+        ));
 
 
         ArrayList<String> ratePage = new ArrayList<String>();
@@ -297,20 +302,19 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             while ((line = rateFile.readLine()) != null) {
                 ratePage.add(line);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ratePage;
 
     }
 
-//  Get Territory/Zip file
+    //  Get Territory/Zip file
     private ArrayList<String> getStateTerritories(String state) {
         BufferedReader zipFile = new BufferedReader(new InputStreamReader(
 
                 getResources().openRawResource(getResources().getIdentifier(
-                        "raw/" + RateState.toLowerCase(),"raw",getPackageName()))
+                        "raw/" + RateState.toLowerCase(), "raw", getPackageName()))
         ));
 
         ArrayList<String> zips = new ArrayList<String>();
@@ -320,15 +324,14 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             while ((line = zipFile.readLine()) != null) {
                 zips.add(line);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return zips;
     }
 
-//  After clicking 'Done' when getting zip code
+    //  After clicking 'Done' when getting zip code
     private void onEnter() {
         int length = zipCode.getText().toString().length();
 
@@ -336,18 +339,16 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             Toast toast = Toast.makeText(getApplicationContext(),
                     "Must be valid Zip Code or Territory", Toast.LENGTH_SHORT);
             toast.show();
-        }
-        else {
+        } else {
             String zip = zipCode.getText().toString();
 
             if (length == 1) {
                 terrNum = String.valueOf(zip);
                 showTerr.setText(terrNum);
-            }
-            else {
+            } else {
                 ArrayList<String> zips = getStateTerritories(RateState);
                 final HashMap<String, String> territory = new HashMap<String, String>();
-                for (String line: zips) {
+                for (String line : zips) {
                     String[] cities = line.split(tabchar);
                     if (cities[0].equals(zip)) {
                         territory.put(cities[1], cities[2]);
@@ -383,14 +384,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     AlertDialog dialog = question.create();
                     dialog.show();
 
-                }
-                else if (territory.keySet().isEmpty()) {
+                } else if (territory.keySet().isEmpty()) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Error", Toast.LENGTH_SHORT);
                     toast.show();
-                }
-                else {
-                    for (String value: territory.values()) {
+                } else {
+                    for (String value : territory.values()) {
                         terrNum = value;
                         showTerr.setText(terrNum);
                     }
@@ -399,7 +398,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         }
     }
 
-//  Main Rate Calculation
+    //  Main Rate Calculation
     public void calculateRates(ArrayList<String> ratePage) {
 
         int intCC = Integer.parseInt(bikeCC);
@@ -409,7 +408,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         String rateLine = "";
         String limitLine = "";
 
-        boolean addCompColl = fullcoverage.isSelected();
+        boolean addCompColl = fullcoverage.isChecked();
+        boolean transDiscount = transferDisc.isChecked();
+        boolean multiDiscount = multiBikeDisc.isChecked();
+        boolean podDiscount = podDisc.isChecked();
 
         driverAge = getAge();
 
@@ -467,7 +469,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             }
 
         }
-        totalOffset = ageOffset + ccOffset ;
+        totalOffset = ageOffset + ccOffset;
 //     helloWorld.setText(totalOffset+" "+intCC+" "+bikeType);
 //     helloWorld.setText(totalOffset + "");
         limitLine = ratePage.get(2);
@@ -477,10 +479,68 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         String[] limline = limitLine.split(tabchar);
         ArrayList<String> limits = new ArrayList<String>();
         ArrayList<String> rates = new ArrayList<String>();
-        for (int i=4; i<rline.length; i++) {
-            limits.add(limline[i]);
-            rates.add(rline[i]);
+        int liabrate;
+        int compcollrate;
+        double totalrate;
+        double discountperc;
+
+
+        if (addCompColl) {
+            Calendar cal = Calendar.getInstance();
+            int thisyear = cal.get(Calendar.YEAR);
+            Integer bikeAge = thisyear - Integer.parseInt(year);
+            helloWorld.setText(bikeAge.toString());
+
+            int cmpindex = 0;
+            if (bikeAge < 2) {
+                cmpindex = 1;
+            } else {
+                if (bikeAge < 4) {
+                   cmpindex = 2;
+                } else {
+                    cmpindex = 3;
+                }
+            }
+
+            compcollrate = Integer.valueOf(rline[cmpindex]);
+
+        } else {
+            compcollrate = 0;
         }
+
+        for (int i = 4; i < rline.length; i++) {
+            limits.add(limline[i]);
+            String junk = rline[i];
+            liabrate = Integer.valueOf(junk);
+            totalrate = liabrate + compcollrate;
+
+//          handle discounts here
+
+            if (transDiscount) {
+                totalrate = totalrate * 0.9;
+            }
+            if (multiDiscount) {
+                totalrate = totalrate * 0.9;
+            }
+            if (podDiscount) {
+                if (bikeType.equals("SPORT")) {
+                    discountperc = 0.85;
+                } else {
+                    if ((RateState.equals("PA")) || (RateState.equals("WV")) || (RateState.equals("VA")) || (RateState.equals("MI"))) {
+                        discountperc = 0.85;
+                    } else {
+                        discountperc = 0.75;
+                    }
+
+                }
+                totalrate = totalrate * discountperc;
+            }
+
+            totalrate = Math.round(totalrate * 1) / 1;
+            totalrate = (int) totalrate;
+            rates.add(totalrate + "");
+        }
+
         displayRates(limits, rates);
 
     }
@@ -502,7 +562,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                 ArrayList<String> validMakes = new ArrayList<String>();
 
-                for(String line: vehiclesList) {
+                for (String line : vehiclesList) {
                     String[] list = line.split(tabchar);
                     if (list[5].equals(year)) {
                         String make = list[2];
@@ -524,7 +584,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 myModelAdapter.notifyDataSetChanged();
 
                 ArrayList<String> validModels = new ArrayList<String>();
-                for(String line: vehiclesList) {
+                for (String line : vehiclesList) {
                     String[] list = line.split(tabchar);
                     if (list[5].equals(year)) {
                         if (list[2].equals(make)) {
@@ -532,7 +592,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                             if (validModels.contains(model) == false) {
                                 validModels.add(model);
                                 String[] data = {list[1], list[6]};
-                                modelData.put(model,data);
+                                modelData.put(model, data);
                             }
                         }
                     }
@@ -580,13 +640,13 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
 
         // If birth date is greater than todays date (after 2 days adjustment of leap year) then decrement age one year
-        if ( (birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) ||
-                (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH ))){
+        if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) ||
+                (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
             age--;
 
             // If birth date and todays date are of same month and birth day of month is greater than todays day of month then decrement age
-        }else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH )) &&
-                (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH ))){
+        } else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH)) &&
+                (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH))) {
             age--;
         }
 
@@ -599,8 +659,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         quote.setTitle("Save Your Quote?");
 
         String str = limits.get(0) + " =$" + rates.get(0);
-        for (int i=1; i < limits.size(); i++) {
-             str += "\n" + limits.get(i) + " = $" + rates.get(i);
+        for (int i = 1; i < limits.size(); i++) {
+            str += "\n" + limits.get(i) + " = $" + rates.get(i);
         }
 
         quote.setMessage(str);
@@ -668,8 +728,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             StringBuilder sb = new StringBuilder();
             String output = sb.append(eventName + tabchar + year).toString();
             fos.write(output.getBytes());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -685,8 +744,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             }
             String[] l = line.split(tabchar);
             return l[0];
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (e instanceof FileNotFoundException) {
                 return "";
             }
