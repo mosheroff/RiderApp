@@ -2,6 +2,7 @@ package com.example.michael.second_test;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
@@ -47,6 +50,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
     public String tabchar = "\t";
 
+    public String dataFileName;
+    public String eventName;
     public Spinner validStates;
     public String RateState;
     public String year;
@@ -75,6 +80,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public RadioButton male;
     public RadioButton married;
     public RadioButton fullcoverage;
+    public EditText eventText;
+    public File saveFile;
 
 
     @Override
@@ -96,6 +103,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         married = (RadioButton) this.findViewById(R.id.Married);
         fullcoverage = (RadioButton) this.findViewById(R.id.FullCoverage);
 
+
+        eventName = setEventName();
+        helloWorld.setText(eventName);
 
         modelData = new HashMap<String, String[]>();
 
@@ -274,7 +284,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         rateFileKey = rateFileKey.concat(rateBikeType);
 
-        helloWorld.setText(rateFileKey);
         BufferedReader rateFile = new BufferedReader(new InputStreamReader(
                 getResources().openRawResource(getResources().getIdentifier(rateFileKey,"raw",getPackageName()))
 
@@ -398,6 +407,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         int ccOffset = 0;
         int totalOffset = 0;
         String rateLine = "";
+        String limitLine = "";
 
         boolean addCompColl = fullcoverage.isSelected();
 
@@ -460,15 +470,18 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         totalOffset = ageOffset + ccOffset ;
 //     helloWorld.setText(totalOffset+" "+intCC+" "+bikeType);
 //     helloWorld.setText(totalOffset + "");
+        limitLine = ratePage.get(2);
         rateLine = ratePage.get(totalOffset);
-     helloWorld.setText(totalOffset + " " +rateLine);
 
-        String[] line = rateLine.split(tabchar);
+        String[] rline = rateLine.split(tabchar);
+        String[] limline = limitLine.split(tabchar);
         ArrayList<String> limits = new ArrayList<String>();
-        for (int i=4; i<line.length; i++) {
-            limits.add(line[i]);
+        ArrayList<String> rates = new ArrayList<String>();
+        for (int i=4; i<rline.length; i++) {
+            limits.add(limline[i]);
+            rates.add(rline[i]);
         }
-        displayRates(limits);
+        displayRates(limits, rates);
 
     }
 
@@ -581,18 +594,16 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
 
-    public void displayRates(ArrayList<String> limits) {
+    public void displayRates(ArrayList<String> limits, ArrayList<String> rates) {
         AlertDialog.Builder quote = new AlertDialog.Builder(this);
         quote.setTitle("Save Your Quote?");
 
-        String strFinal = "";
-        String str = "";
-        for (int i=0; i < limits.size(); i++) {
-            str = limits.get(i) + " = $" + /*quote*/ "\n";
-            strFinal = str + limits.get(i);
+        String str = limits.get(0) + " =$" + rates.get(0);
+        for (int i=1; i < limits.size(); i++) {
+             str += "\n" + limits.get(i) + " = $" + rates.get(i);
         }
 
-        quote.setMessage(strFinal);
+        quote.setMessage(str);
 
         quote.setCancelable(true);
         quote.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -614,7 +625,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 LayoutInflater inflater = getLayoutInflater();
                 View dialogLayout = inflater.inflate(R.layout.save_dialog, null);
                 builder.setView(dialogLayout);
-                builder.setPositiveButton(android.R.string.yes, null);
+                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveFile();
+                    }
+                });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -624,6 +640,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                 AlertDialog saveDia = builder.create();
                 dialog.dismiss();
+                eventText = (EditText) dialogLayout.findViewById(R.id.event);
+                if (!eventName.equals("")) {
+                    eventText.setText(eventName);
+                }
                 saveDia.show();
             }
         });
@@ -632,6 +652,47 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         dialog.show();
 
 
+    }
+
+    public void saveFile() {
+
+        FileOutputStream fos;
+
+        if (eventName.equals("")) {
+            saveFile = new File(getBaseContext().getFilesDir() + "/" + dataFileName + ".txt");
+            eventName = eventText.getText().toString();
+        }
+
+        try {
+            fos = openFileOutput(dataFileName, Context.MODE_PRIVATE);
+            StringBuilder sb = new StringBuilder();
+            String output = sb.append(eventName + tabchar + year).toString();
+            fos.write(output.getBytes());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String setEventName() {
+        dataFileName = new SimpleDateFormat("yyyyMMdd").format(new Date());
+
+        try {
+            saveFile = new File(getBaseContext().getFilesDir(), dataFileName + ".txt");
+            BufferedReader br = new BufferedReader(new FileReader(saveFile));
+            String line;
+            while (!(line = br.readLine()).equals(null)) {
+            }
+            String[] l = line.split(tabchar);
+            return l[0];
+        }
+        catch (Exception e) {
+            if (e instanceof FileNotFoundException) {
+                return "";
+            }
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }
