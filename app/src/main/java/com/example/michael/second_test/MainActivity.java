@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.provider.Telephony;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +36,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
@@ -87,6 +91,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public CheckBox podDisc;
     public EditText eventText;
     public File saveFile;
+    private int check = 0;
 
 
     @Override
@@ -111,6 +116,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         multiBikeDisc = (CheckBox) this.findViewById(R.id.multiBikeDisc);
         podDisc = (CheckBox) this.findViewById(R.id.podDisc);
 
+        // Delete all testing files
+        /*File folder = new File(getBaseContext().getFilesDir() + "");
+        File[] filePaths = folder.listFiles();
+        for (int i=0; i<filePaths.length; i++) {
+            filePaths[i].delete();
+        }*/
 
         eventName = setEventName();
         helloWorld.setText(eventName);
@@ -221,10 +232,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         submitEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Feature not implemented yet.", Toast.LENGTH_SHORT);
-                toast.show();
-
+                email();
             }
 
         });
@@ -549,67 +557,70 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        ViewGroup vg = (ViewGroup) view.getParent();
-        int vgId = vg.getId();
-        switch (vgId) {
-            case R.id.modelYears:
-                year = modelYears.getItemAtPosition(position).toString();
-                myMakeAdapter.clear();
-                myModelAdapter.clear();
-                myMakeAdapter.notifyDataSetChanged();
-                myModelAdapter.notifyDataSetChanged();
+        check += 1;
+        if (check > 1) {
+            ViewGroup vg = (ViewGroup) view.getParent();
+            int vgId = vg.getId();
+            switch (vgId) {
+                case R.id.modelYears:
+                    year = modelYears.getItemAtPosition(position).toString();
+                    myMakeAdapter.clear();
+                    myModelAdapter.clear();
+                    myMakeAdapter.notifyDataSetChanged();
+                    myModelAdapter.notifyDataSetChanged();
 
 
-                ArrayList<String> validMakes = new ArrayList<String>();
+                    ArrayList<String> validMakes = new ArrayList<String>();
 
-                for (String line : vehiclesList) {
-                    String[] list = line.split(tabchar);
-                    if (list[5].equals(year)) {
-                        String make = list[2];
-                        if (validMakes.contains(make) == false) {
-                            validMakes.add(make);
-                        }
-                    }
-                }
-                Collections.sort(validMakes);
-                myMakeAdapter.addAll(validMakes);
-                myMakeAdapter.notifyDataSetChanged();
-                break;
-            case R.id.validStates:
-                RateState = validStates.getItemAtPosition(position).toString();
-                break;
-            case R.id.modelMakes:
-                make = modelMakes.getItemAtPosition(position).toString();
-                myModelAdapter.clear();
-                myModelAdapter.notifyDataSetChanged();
-
-                ArrayList<String> validModels = new ArrayList<String>();
-                for (String line : vehiclesList) {
-                    String[] list = line.split(tabchar);
-                    if (list[5].equals(year)) {
-                        if (list[2].equals(make)) {
-                            String model = list[3];
-                            if (validModels.contains(model) == false) {
-                                validModels.add(model);
-                                String[] data = {list[1], list[6]};
-                                modelData.put(model, data);
+                    for (String line : vehiclesList) {
+                        String[] list = line.split(tabchar);
+                        if (list[5].equals(year)) {
+                            String make = list[2];
+                            if (validMakes.contains(make) == false) {
+                                validMakes.add(make);
                             }
                         }
                     }
-                }
+                    Collections.sort(validMakes);
+                    myMakeAdapter.addAll(validMakes);
+                    myMakeAdapter.notifyDataSetChanged();
+                    break;
+                case R.id.validStates:
+                    RateState = validStates.getItemAtPosition(position).toString();
+                    break;
+                case R.id.modelMakes:
+                    make = modelMakes.getItemAtPosition(position).toString();
+                    myModelAdapter.clear();
+                    myModelAdapter.notifyDataSetChanged();
 
-                Collections.sort(validModels);
-                myModelAdapter.addAll(validModels);
-                myModelAdapter.notifyDataSetChanged();
-                break;
-            case R.id.modelModels:
-                model = modelModels.getItemAtPosition(position).toString();
+                    ArrayList<String> validModels = new ArrayList<String>();
+                    for (String line : vehiclesList) {
+                        String[] list = line.split(tabchar);
+                        if (list[5].equals(year)) {
+                            if (list[2].equals(make)) {
+                                String model = list[3];
+                                if (validModels.contains(model) == false) {
+                                    validModels.add(model);
+                                    String[] data = {list[1], list[6]};
+                                    modelData.put(model, data);
+                                }
+                            }
+                        }
+                    }
 
-                bikeType = modelData.get(model)[0];
-                bikeCC = modelData.get(model)[1];
-                break;
-            default:
-                break;
+                    Collections.sort(validModels);
+                    myModelAdapter.addAll(validModels);
+                    myModelAdapter.notifyDataSetChanged();
+                    break;
+                case R.id.modelModels:
+                    model = modelModels.getItemAtPosition(position).toString();
+
+                    bikeType = modelData.get(model)[0];
+                    bikeCC = modelData.get(model)[1];
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -718,39 +729,86 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         FileOutputStream fos;
 
-        if (eventName.equals("")) {
-            saveFile = new File(getBaseContext().getFilesDir() + "/" + dataFileName + ".txt");
-            eventName = eventText.getText().toString();
+        if (!saveFile.exists()) {
+            try {
+                saveFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
+        eventName = eventText.getText().toString();
+
         try {
-            fos = openFileOutput(dataFileName, Context.MODE_PRIVATE);
+            fos = new FileOutputStream(saveFile, true);
             StringBuilder sb = new StringBuilder();
-            String output = sb.append(eventName + tabchar + year).toString();
+            String output = sb.append(eventName + tabchar + year + "\n").toString();
             fos.write(output.getBytes());
+            fos.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public String setEventName() {
-        dataFileName = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        dataFileName = new SimpleDateFormat("yyyyMMdd").format(new Date()).toString();
 
         try {
             saveFile = new File(getBaseContext().getFilesDir(), dataFileName + ".txt");
-            BufferedReader br = new BufferedReader(new FileReader(saveFile));
-            String line;
-            while (!(line = br.readLine()).equals(null)) {
-            }
-            String[] l = line.split(tabchar);
-            return l[0];
-        } catch (Exception e) {
-            if (e instanceof FileNotFoundException) {
+            saveFile.setReadable(true);
+            saveFile.setWritable(true);
+            if (!saveFile.exists()) {
                 return "";
             }
+            else {
+                BufferedReader br = new BufferedReader(new FileReader(saveFile));
+                String line = br.readLine();
+                helloWorld.setText(line);
+                String[] l = new String[2];
+                while (line != null) {
+                    l = line.split(tabchar);
+                    line = br.readLine();
+                }
+                br.close();
+                return l[0];
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public void email() {
+        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+                new String[]{"mosheroff@rider.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_CC,
+                new String[]{"mosheroff@rider.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Uploaded Quotes");
+        ArrayList<String> extra_text = new ArrayList<String>();
+        extra_text.add("Here are your Quotes.");
+        emailIntent.putStringArrayListExtra(android.content.Intent.EXTRA_TEXT, extra_text);
+
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+
+        File folder = new File(getBaseContext().getFilesDir() + "");
+
+        File[] filePaths = folder.listFiles();
+
+        if (filePaths.length == 0) {
+            return;
+        }
+
+        for (int i=0; i<filePaths.length; i++) {
+            File fileIn = new File(filePaths[i] + "");
+            Uri u = FileProvider.getUriForFile(this, "com.example.michael.second_test.fileprovider", fileIn);
+            uris.add(u);
+        }
+        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        emailIntent.setFlags(1); // Uris are readable
+        emailIntent.setFlags(2); // Uris are writable
+        this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
 }
