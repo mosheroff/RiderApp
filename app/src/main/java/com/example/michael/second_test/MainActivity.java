@@ -89,6 +89,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public CheckBox transferDisc;
     public CheckBox multiBikeDisc;
     public CheckBox podDisc;
+    public EditText Fname;
+    public EditText Lname;
+    public EditText emailaddr;
     public EditText eventText;
     public File saveFile;
     private int check = 0;
@@ -115,6 +118,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         transferDisc = (CheckBox) this.findViewById(R.id.transferDisc);
         multiBikeDisc = (CheckBox) this.findViewById(R.id.multiBikeDisc);
         podDisc = (CheckBox) this.findViewById(R.id.podDisc);
+        Fname = (EditText) this.findViewById(R.id.first_name);
+        Lname = (EditText) this.findViewById(R.id.last_name);
+        emailaddr = (EditText) this.findViewById(R.id.email);
 
         // Delete all testing files
         /*File folder = new File(getBaseContext().getFilesDir() + "");
@@ -542,11 +548,13 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                 }
                 totalrate = totalrate * discountperc;
+                if (totalrate < 60) {
+                    totalrate = 60;
+                }
             }
 
-            totalrate = Math.round(totalrate * 1) / 1;
-            totalrate = (int) totalrate;
-            rates.add(totalrate + "");
+            int ttotalrate = (int)Math.round(totalrate);
+            rates.add(ttotalrate + "");
         }
 
         displayRates(limits, rates);
@@ -669,9 +677,13 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         AlertDialog.Builder quote = new AlertDialog.Builder(this);
         quote.setTitle("Save Your Quote?");
 
-        String str = limits.get(0) + " =$" + rates.get(0);
+        String str1 = String.format("%1$-" + 20 + "s", limits.get(0));
+        String str = str1 + "= $" + rates.get(0);
+
         for (int i = 1; i < limits.size(); i++) {
-            str += "\n" + limits.get(i) + " = $" + rates.get(i);
+            int t = 20-i;
+            str1 = String.format("%1$-" + t + "s", limits.get(i));
+            str += "\n" + str1 + "= $" + rates.get(i);
         }
 
         quote.setMessage(str);
@@ -740,9 +752,51 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         eventName = eventText.getText().toString();
 
         try {
+
             fos = new FileOutputStream(saveFile, true);
             StringBuilder sb = new StringBuilder();
-            String output = sb.append(eventName + tabchar + year + "\n").toString();
+//            String output = sb.append(eventName + tabchar + year + "\n").toString();
+            sb.append(eventName);
+            sb.append(tabchar + RateState);
+            sb.append(tabchar + zipCode);
+            sb.append(tabchar + birthdayButton.getText().toString());
+            if (male.isChecked()) {
+                sb.append(tabchar + "M");
+            } else {
+                sb.append(tabchar + "F");
+            }
+            if (married.isChecked()) {
+                sb.append(tabchar + "M");
+            } else {
+                sb.append(tabchar + "F");
+            }
+            sb.append(tabchar + year);
+            sb.append(tabchar + make);
+            sb.append(tabchar + model);
+            if (fullcoverage.isChecked()) {
+                sb.append(tabchar + "Y");
+            } else {
+                sb.append(tabchar + "N");
+            }
+            if (transferDisc.isChecked()) {
+                sb.append(tabchar + "Y");
+            } else {
+                sb.append(tabchar + "N");
+            }
+            if (multiBikeDisc.isChecked()) {
+                sb.append(tabchar + "Y");
+            } else {
+                sb.append(tabchar + "N");
+            }
+            if (podDisc.isChecked()) {
+                sb.append(tabchar + "Y");
+            } else {
+                sb.append(tabchar + "N");
+            }
+            sb.append(tabchar + Fname);
+            sb.append(tabchar + Lname);
+            sb.append(tabchar + emailaddr);
+            String output = sb.append("\n").toString();
             fos.write(output.getBytes());
             fos.flush();
         } catch (Exception e) {
