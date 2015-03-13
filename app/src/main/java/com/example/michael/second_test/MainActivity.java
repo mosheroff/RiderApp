@@ -33,12 +33,14 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -94,7 +96,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public EditText emailaddr;
     public EditText eventText;
     public File saveFile;
+    public Button deleteButton;
     private int check = 0;
+    private boolean del = false;
+    private boolean dialogDone = false;
 
 
     @Override
@@ -102,6 +107,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        deleteButton = (Button) this.findViewById(R.id.delete);
         modelYears = (Spinner) this.findViewById(R.id.modelYears);
         validStates = (Spinner) this.findViewById(R.id.validStates);
         helloWorld = (TextView) this.findViewById(R.id.textView1);
@@ -122,12 +128,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         Lname = (EditText) this.findViewById(R.id.last_name);
         emailaddr = (EditText) this.findViewById(R.id.email);
 
-        // Delete all testing files
-        /*File folder = new File(getBaseContext().getFilesDir() + "");
-        File[] filePaths = folder.listFiles();
-        for (int i=0; i<filePaths.length; i++) {
-            filePaths[i].delete();
-        }*/
 
         eventName = setEventName();
         helloWorld.setText(eventName);
@@ -241,6 +241,41 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 email();
             }
 
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Are You Sure?");
+                builder.setCancelable(true);
+
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        File folder = new File(getBaseContext().getFilesDir() + "");
+                        final File[] filePaths = folder.listFiles();
+                        for (int i=0; i<filePaths.length; i++) {
+                            filePaths[i].delete();
+                        }
+                        dialog.dismiss();
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "Files successfully deleted", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+            }
         });
 
     }
@@ -712,6 +747,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         saveFile();
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "Saved!", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                 });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -758,7 +796,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 //            String output = sb.append(eventName + tabchar + year + "\n").toString();
             sb.append(eventName);
             sb.append(tabchar + RateState);
-            sb.append(tabchar + zipCode);
+            String zip = zipCode.getText().toString();
+            sb.append(tabchar + zip);
             sb.append(tabchar + birthdayButton.getText().toString());
             if (male.isChecked()) {
                 sb.append(tabchar + "M");
@@ -793,9 +832,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             } else {
                 sb.append(tabchar + "N");
             }
-            sb.append(tabchar + Fname);
-            sb.append(tabchar + Lname);
-            sb.append(tabchar + emailaddr);
+            String fname = Fname.getText().toString();
+            String lname = Lname.getText().toString();
+            String emailA = emailaddr.getText().toString();
+            sb.append(tabchar + fname);
+            sb.append(tabchar + lname);
+            sb.append(tabchar + emailA);
             String output = sb.append("\n").toString();
             fos.write(output.getBytes());
             fos.flush();
@@ -833,36 +875,117 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
     public void email() {
-        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        emailIntent.setType("text/plain");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-                new String[]{"mosheroff@rider.com"});
-        emailIntent.putExtra(android.content.Intent.EXTRA_CC,
-                new String[]{"mosheroff@rider.com"});
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Uploaded Quotes");
-        ArrayList<String> extra_text = new ArrayList<String>();
-        extra_text.add("Here are your Quotes.");
-        emailIntent.putStringArrayListExtra(android.content.Intent.EXTRA_TEXT, extra_text);
-
-        ArrayList<Uri> uris = new ArrayList<Uri>();
 
         File folder = new File(getBaseContext().getFilesDir() + "");
 
-        File[] filePaths = folder.listFiles();
+        final File[] filePaths = folder.listFiles();
+
+        dialogDone = false;
 
         if (filePaths.length == 0) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "There were no quote files to send", Toast.LENGTH_SHORT);
+            toast.show();
             return;
         }
+        else {
 
-        for (int i=0; i<filePaths.length; i++) {
-            File fileIn = new File(filePaths[i] + "");
-            Uri u = FileProvider.getUriForFile(this, "com.example.michael.second_test.fileprovider", fileIn);
-            uris.add(u);
+            for (int i = 0; i < filePaths.length; i++) {
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+                        new String[]{"mosheroff@rider.com"});
+                String subject = filePaths[i].getName().replace(".txt", "").trim();
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Uploaded Quotes From: " + subject);
+                subject = subject.substring(4, 6) + " " + subject.substring(6) + ", " + subject.substring(0, 4);
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Attached is the rate file from " + subject + ".");
+
+                Uri u = FileProvider.getUriForFile(this, "com.example.michael.second_test.fileProvider", filePaths[i]);
+
+                emailIntent.putExtra(Intent.EXTRA_STREAM, u);
+                emailIntent.setFlags(1); // Uris are readable
+                emailIntent.setFlags(2); // Uris are writable
+                this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+
+            }
         }
-        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        emailIntent.setFlags(1); // Uris are readable
-        emailIntent.setFlags(2); // Uris are writable
-        this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-    }
 
+            //send(filePaths);
+
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("Before you email... ");
+            builder.setCancelable(false);
+            builder.setMessage("Would you like to delete your files after you email them?");
+            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    del = true;
+                    dialog.dismiss();
+                    send(filePaths);
+                }
+            });
+            builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    del = false;
+                    dialog.dismiss();
+                    send(filePaths);
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();*/
+   // }
+
+ /*   public void send(File[] filePaths) {
+
+        for (int i = 0; i < filePaths.length; i++) {
+            //File fileIn = new File(filePaths[i] + "");
+*//*
+            if (del) {
+                File destFile = null;
+
+                try{
+
+                    String fileName = fileIn.getName().replace("/","").trim();
+                    destFile = new File(getBaseContext().getCacheDir(), fileName);
+                    destFile.createNewFile();
+
+                    BufferedReader br = new BufferedReader(new FileReader(fileIn));
+                    String line;
+                    FileOutputStream fos = new FileOutputStream(destFile,true);
+                    while ((line = br.readLine()) != null) {
+                        fos.write(line.getBytes());
+                    }
+                    fos.flush();
+                    br.close();
+                    fos.close();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+
+                u = FileProvider.getUriForFile(this, "com.example.michael.second_test.fileprovider", destFile);
+                fileIn.delete();
+            }
+            else {*//*
+               // u = FileProvider.getUriForFile(this, "com.example.michael.second_test.fileProvider", fileIn);
+  //          }
+
+            final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("text/plain");
+            emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+                    new String[]{"mosheroff@rider.com"});
+
+            String subject = filePaths[i].getName().replace(".txt","").trim();
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Uploaded Quotes From: " + subject);
+            subject = subject.substring(4,6) + " " + subject.substring(6) + ", " + subject.substring(0,4);
+            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Attached is the rate file from " + subject + ".");
+
+            Uri u = FileProvider.getUriForFile(MainActivity.this, "com.example.michael.second_test.fileProvider", filePaths[i]);
+
+            emailIntent.putExtra(Intent.EXTRA_STREAM, u);
+            emailIntent.setFlags(1); // Uris are readable
+            emailIntent.setFlags(2); // Uris are writable
+            this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        }*/
+    }
 }

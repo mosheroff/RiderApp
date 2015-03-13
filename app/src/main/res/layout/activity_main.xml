@@ -222,10 +222,17 @@
         android:id="@+id/submitEvent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Submit Event to Corp."
+        android:text="E-mail Quotes to Marketing"
         android:width="@dimen/abc_text_size_display_1_material"
         android:layout_below="@id/submit"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/delete"
+        android:text="Delete All Saved Quotes"
+        android:layout_below="@id/submitEvent"/>
 
 </RelativeLayout>
 

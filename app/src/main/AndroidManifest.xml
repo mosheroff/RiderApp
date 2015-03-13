@@ -7,9 +7,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
             <provider
                 android:name="android.support.v4.content.FileProvider"
-                android:authorities="com.example.michael.second_test.fileprovider"
+                android:authorities="com.example.michael.second_test.fileProvider"
                 android:grantUriPermissions="true"
                 android:exported="false">
             <meta-data
