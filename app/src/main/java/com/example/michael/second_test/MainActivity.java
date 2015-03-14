@@ -253,7 +253,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        File folder = new File(getBaseContext().getFilesDir() + "");
+                        File folder = new File(getBaseContext().getExternalFilesDir("") + "");
                         final File[] filePaths = folder.listFiles();
                         for (int i=0; i<filePaths.length; i++) {
                             filePaths[i].delete();
@@ -832,12 +832,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             } else {
                 sb.append(tabchar + "N");
             }
-            String fname = Fname.getText().toString();
-            String lname = Lname.getText().toString();
-            String emailA = emailaddr.getText().toString();
-            sb.append(tabchar + fname);
-            sb.append(tabchar + lname);
-            sb.append(tabchar + emailA);
+//            String fname = Fname.getText().toString();
+//            String lname = Lname.getText().toString();
+//            String emailA = emailaddr.getText().toString();
+//            sb.append(tabchar + fname);
+//            sb.append(tabchar + lname);
+//            sb.append(tabchar + emailA);
             String output = sb.append("\n").toString();
             fos.write(output.getBytes());
             fos.flush();
@@ -850,7 +850,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         dataFileName = new SimpleDateFormat("yyyyMMdd").format(new Date()).toString();
 
         try {
-            saveFile = new File(getBaseContext().getFilesDir(), dataFileName + ".txt");
+            saveFile = new File(MainActivity.this.getBaseContext().getExternalFilesDir(""), dataFileName + ".txt");
             saveFile.setReadable(true);
             saveFile.setWritable(true);
             if (!saveFile.exists()) {
@@ -876,7 +876,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
     public void email() {
 
-        File folder = new File(getBaseContext().getFilesDir() + "");
+        File folder = new File(MainActivity.this.getBaseContext().getExternalFilesDir("") + "");
 
         final File[] filePaths = folder.listFiles();
 
@@ -892,20 +892,21 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
             for (int i = 0; i < filePaths.length; i++) {
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+//                final Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setType("text/plain");
                 emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
                         new String[]{"mosheroff@rider.com"});
                 String subject = filePaths[i].getName().replace(".txt", "").trim();
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Uploaded Quotes From: " + subject);
                 subject = subject.substring(4, 6) + " " + subject.substring(6) + ", " + subject.substring(0, 4);
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Attached is the rate file from " + subject + ".");
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Attached is the quote file from " + subject + ".");
 
-                Uri u = FileProvider.getUriForFile(this, "com.example.michael.second_test.fileProvider", filePaths[i]);
+                Uri u = FileProvider.getUriForFile(MainActivity.this, "com.example.michael.second_test.fileProvider", filePaths[i]);
 
                 emailIntent.putExtra(Intent.EXTRA_STREAM, u);
                 emailIntent.setFlags(1); // Uris are readable
                 emailIntent.setFlags(2); // Uris are writable
-                this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                MainActivity.this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
 
             }
         }
