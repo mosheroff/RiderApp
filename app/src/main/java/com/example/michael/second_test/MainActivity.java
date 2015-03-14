@@ -124,9 +124,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         transferDisc = (CheckBox) this.findViewById(R.id.transferDisc);
         multiBikeDisc = (CheckBox) this.findViewById(R.id.multiBikeDisc);
         podDisc = (CheckBox) this.findViewById(R.id.podDisc);
-        Fname = (EditText) this.findViewById(R.id.first_name);
-        Lname = (EditText) this.findViewById(R.id.last_name);
-        emailaddr = (EditText) this.findViewById(R.id.email);
 
 
         eventName = setEventName();
@@ -742,6 +739,11 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                 LayoutInflater inflater = getLayoutInflater();
                 View dialogLayout = inflater.inflate(R.layout.save_dialog, null);
+
+                Fname = (EditText) dialogLayout.findViewById(R.id.first_name);
+                Lname = (EditText) dialogLayout.findViewById(R.id.last_name);
+                emailaddr = (EditText) dialogLayout.findViewById(R.id.email);
+
                 builder.setView(dialogLayout);
                 builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -772,7 +774,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         AlertDialog dialog = quote.create();
         dialog.show();
 
-
     }
 
     public void saveFile() {
@@ -793,7 +794,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
             fos = new FileOutputStream(saveFile, true);
             StringBuilder sb = new StringBuilder();
-//            String output = sb.append(eventName + tabchar + year + "\n").toString();
             sb.append(eventName);
             sb.append(tabchar + RateState);
             String zip = zipCode.getText().toString();
@@ -832,12 +832,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             } else {
                 sb.append(tabchar + "N");
             }
-//            String fname = Fname.getText().toString();
-//            String lname = Lname.getText().toString();
-//            String emailA = emailaddr.getText().toString();
-//            sb.append(tabchar + fname);
-//            sb.append(tabchar + lname);
-//            sb.append(tabchar + emailA);
+            String fname = Fname.getText().toString();
+            String lname = Lname.getText().toString();
+            String emailA = emailaddr.getText().toString();
+            sb.append(tabchar + fname);
+            sb.append(tabchar + lname);
+            sb.append(tabchar + emailA);
             String output = sb.append("\n").toString();
             fos.write(output.getBytes());
             fos.flush();
