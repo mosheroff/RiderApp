@@ -171,13 +171,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="FullCoverage" />
+            android:text="Comp-Coll" />
 
         <RadioButton
             android:id="@+id/LiabilityOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LiabilityOnly"
+            android:text="Liability Only"
             android:layout_weight="1"
             android:layout_gravity="right"
         />

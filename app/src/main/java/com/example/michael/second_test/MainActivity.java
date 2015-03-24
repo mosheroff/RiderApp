@@ -529,7 +529,14 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         int compcollrate;
         double totalrate;
         double discountperc;
+        int limitPointStart = 4;
+        int limitItemCount;
 
+        if ((RateState.equals("NJ")) || ((RateState.equals("PA")) || RateState.equals("DE"))) {
+            limitItemCount = 5;
+        } else {
+            limitItemCount = 4;
+        }
 
         if (addCompColl) {
             Calendar cal = Calendar.getInstance();
@@ -552,9 +559,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         } else {
             compcollrate = 0;
+            if (RateState.equals("OH")){
+                limitPointStart += limitItemCount;
+            }
         }
 
-        for (int i = 4; i < rline.length; i++) {
+        for (int i = limitPointStart; i < (limitPointStart+limitItemCount); i++) {
             limits.add(limline[i]);
             String junk = rline[i];
             liabrate = Integer.valueOf(junk);
@@ -656,6 +666,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     model = modelModels.getItemAtPosition(position).toString();
 
                     bikeType = modelData.get(model)[0];
+                    helloWorld.setText(bikeType);
                     bikeCC = modelData.get(model)[1];
                     break;
                 default:

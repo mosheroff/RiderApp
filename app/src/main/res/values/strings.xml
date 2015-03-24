@@ -6,15 +6,15 @@
     <string name="No">NO</string>
 
     <string-array name="validStates">
-        <item>DE</item>
+        <!-- <item>DE</item>  -->
         <item>IN</item>
         <item>MD</item>
-        <item>MI</item>
+        <!--  <item>MI</item>  -->
         <item>NJ</item>
         <item>OH</item>
-        <item>PA</item>
-        <item>VA</item>
-        <item>WV</item>
+        <!--  <item>PA</item>  -->
+        <!--  <item>VA</item>  -->
+        <!--  <item>WV</item>  -->
     </string-array>
 
     <string-array name="validYears">
