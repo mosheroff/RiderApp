@@ -578,7 +578,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             if (multiDiscount) {
                 totalrate = totalrate * 0.9;
             }
-            if (podDiscount) {
+            if ((podDiscount) && (addCompColl)) {
                 if (bikeType.equals("SPORT")) {
                     discountperc = 0.85;
                 } else {
@@ -590,9 +590,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                 }
                 totalrate = totalrate * discountperc;
-                if (totalrate < 60) {
-                    totalrate = 60;
-                }
+            }
+
+            if (totalrate < 60) {
+                totalrate = 60;
             }
 
             int ttotalrate = (int)Math.round(totalrate);
