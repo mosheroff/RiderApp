@@ -226,9 +226,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
 
-                final ArrayList<String> ratePage = getRatePage();
-                calculateRates(ratePage);
+                    final ArrayList<String> ratePage = getRatePage();
+                    calculateRates(ratePage);
             }
+
         });
 
 //      Submit Event Button
@@ -536,6 +537,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             limitItemCount = 5;
         } else {
             limitItemCount = 4;
+        }
+
+        if (RateState.equals("VA")) {
+            limitPointStart = 5;
         }
 
         if (addCompColl) {
