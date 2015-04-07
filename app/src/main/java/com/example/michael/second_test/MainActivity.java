@@ -73,6 +73,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public Spinner modelModels;
     public EditText zipCode;
     public String terrNum;
+    public String chosenCity;
+    public String chosenCounty;
     public Button birthdayButton;
     public DatePickerDialog datePicker;
     public String rateFileKey;
@@ -391,6 +393,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
             if (length == 1) {
                 terrNum = String.valueOf(zip);
+                chosenCity = "FakeCity";
+                chosenCounty = "FakeCounty";
                 showTerr.setText(terrNum);
             } else {
                 ArrayList<String> zips = getStateTerritories(RateState);
@@ -399,6 +403,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     String[] cities = line.split(tabchar);
                     if (cities[0].equals(zip)) {
                         territory.put(cities[1], cities[2]);
+                        chosenCity = cities[1];
+                        chosenCounty = cities[3];
                     }
                 }
                 if (territory.keySet().size() > 1) {
@@ -417,6 +423,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                         public void onClick(DialogInterface dialog, int which) {
                             String city = dialogSpin.getSelectedItem().toString();
                             terrNum = territory.get(city);
+//                            chosenCity = city;
                             showTerr.setText(terrNum);
                             dialog.dismiss();
                         }
@@ -815,6 +822,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             sb.append(tabchar + RateState);
             String zip = zipCode.getText().toString();
             sb.append(tabchar + zip);
+            sb.append(tabchar + chosenCity);
+            sb.append(tabchar + chosenCounty);
             sb.append(tabchar + birthdayButton.getText().toString());
             if (male.isChecked()) {
                 sb.append(tabchar + "M");
@@ -912,6 +921,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 //                final Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setType("text/plain");
                 emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+                        new String[]{"Eventquote@rider.com"});
+                emailIntent.putExtra(android.content.Intent.EXTRA_CC,
                         new String[]{"mosheroff@rider.com"});
                 String subject = filePaths[i].getName().replace(".txt", "").trim();
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Uploaded Quotes From: " + subject);
