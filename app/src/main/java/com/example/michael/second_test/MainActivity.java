@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.Telephony;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Property;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +33,13 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -99,9 +109,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public EditText eventText;
     public File saveFile;
     public Button deleteButton;
+    public Button uploadButton;
     private int check = 0;
     private boolean del = false;
     private boolean dialogDone = false;
+    private Thread thread;
+    private Handler handler = new Handler();
 
 
     @Override
@@ -110,6 +123,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         deleteButton = (Button) this.findViewById(R.id.delete);
+        uploadButton = (Button) this.findViewById(R.id.upload);
         modelYears = (Spinner) this.findViewById(R.id.modelYears);
         validStates = (Spinner) this.findViewById(R.id.validStates);
         helloWorld = (TextView) this.findViewById(R.id.textView1);
@@ -129,7 +143,11 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
 
         eventName = setEventName();
-        helloWorld.setText(eventName);
+        String printEventName = eventName;
+        if (printEventName == "") {
+            printEventName = "          ";
+        }
+        helloWorld.setText(printEventName);
 
         modelData = new HashMap<String, String[]>();
 
@@ -243,6 +261,70 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         });
 
+
+//      Upload Button
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Are You Sure?");
+                builder.setCancelable(true);
+
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        File folder = new File(getBaseContext().getExternalFilesDir("") + "");
+                        Integer quoteCtr = 0;
+                        final File[] filePaths = folder.listFiles();
+                        for (int i = 0; i < filePaths.length; i++) {
+                            String fileName = filePaths[i].toString();
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    "Uploading file " + fileName, Toast.LENGTH_SHORT);
+                            toast.show();
+                            try {
+                                File uploadFile = new File(fileName);
+                                BufferedReader uploadBr = new BufferedReader(new FileReader(uploadFile));
+                                String qline;
+                                try {
+                                    while ((qline = uploadBr.readLine()) != null) {
+                                        String[] quoteLine = qline.split(tabchar);
+                                        quoteCtr += 1;
+                                        Toast toast1 = Toast.makeText(getApplicationContext(),
+                                                "Uploading Quote " + quoteLine[15] + " " + quoteLine[16], Toast.LENGTH_SHORT);
+                                        toast1.show();
+//                                        if (quoteCtr == 1 && i == 1) {
+                                            uploadQoute(quoteLine, fileName, quoteCtr);
+                                        SystemClock.sleep(5000);
+//                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        dialog.dismiss();
+                        Toast toast2 = Toast.makeText(getApplicationContext(),
+                                "Files successfully uploaded", Toast.LENGTH_SHORT);
+                        toast2.show();
+                    }
+                });
+
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+            }
+        });
+
+//      Delete Button
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -833,11 +915,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             if (married.isChecked()) {
                 sb.append(tabchar + "M");
             } else {
-                sb.append(tabchar + "F");
+                sb.append(tabchar + "S");
             }
             sb.append(tabchar + year);
             sb.append(tabchar + make);
             sb.append(tabchar + model);
+            sb.append(tabchar + bikeCC);
             if (fullcoverage.isChecked()) {
                 sb.append(tabchar + "Y");
             } else {
@@ -997,7 +1080,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             }
             else {*//*
                // u = FileProvider.getUriForFile(this, "com.example.michael.second_test.fileProvider", fileIn);
-  //          }
+    //          }
 
             final Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.setType("text/plain");
@@ -1017,4 +1100,427 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
         }*/
     }
+
+//  SOAP Call to upload quotes to iPOS
+    public void uploadQoute(final String[] quoteLine, final String fileName, final Integer quoteCtr) {
+
+       thread = new Thread() {
+           public void run() {
+               try {
+
+
+                   String RIDER_METHOD_NAME = "ComparativeRater";
+                   String RIDER_NAMESPACE = "http://www.rider.com/RIDER_QUOTE_RATER";
+                   String RIDER_SOAP_ACTION = "http://www.rider.com/RIDER_QUOTE_RATER/ComparativeRater";
+                   String RIDER_URL = "https://uat.riderpos.net:444/RiderComparativeRater/services/RiderComparativeRater?wsdl";
+
+                   SoapObject comparativeRaterRequest = new SoapObject(RIDER_NAMESPACE, "RiderComparativeRaterRequest");
+                   SoapObject quoteInfo = new SoapObject(RIDER_NAMESPACE, "quoteinfo");
+
+                   PropertyInfo requestID = new PropertyInfo();
+                   requestID.setNamespace(RIDER_NAMESPACE);
+                   requestID.setType(PropertyInfo.STRING_CLASS);
+                   requestID.setName("RequestID");
+//                   requestID.setValue("RiderRemote-"+fileName+"-"+quoteCtr.toString());
+                   requestID.setValue("OctaneLending-132D-105112.37-174-Q7"+quoteCtr.toString());
+                   quoteInfo.addProperty(requestID);
+                   PropertyInfo requestType = new PropertyInfo();
+                   requestType.setNamespace(RIDER_NAMESPACE);
+                   requestType.setType(PropertyInfo.STRING_CLASS);
+                   requestType.setName("RequestType");
+                   requestType.setValue("Q");
+                   quoteInfo.addProperty(requestType);
+                   PropertyInfo howHearRider = new PropertyInfo();
+                   howHearRider.setNamespace(RIDER_NAMESPACE);
+                   howHearRider.setName("How_Hear_Rider");
+                   howHearRider.setType(PropertyInfo.STRING_CLASS);
+                   howHearRider.setValue("A05");
+                   quoteInfo.addProperty(howHearRider);
+                   PropertyInfo subline = new PropertyInfo();
+                   subline.setNamespace(RIDER_NAMESPACE);
+                   subline.setName("subline");
+                   subline.setType(PropertyInfo.STRING_CLASS);
+//                   subline.setValue("MD");
+                   subline.setValue(quoteLine[1]);
+                   quoteInfo.addProperty(subline);
+                   PropertyInfo policyEffectiveDate = new PropertyInfo();
+                   policyEffectiveDate.setNamespace(RIDER_NAMESPACE);
+                   policyEffectiveDate.setName("policyEffectiveDate");
+                   policyEffectiveDate.setType(PropertyInfo.STRING_CLASS);
+//                 need to fix date
+                   policyEffectiveDate.setValue("2015-04-20");
+                   quoteInfo.addProperty(policyEffectiveDate);
+                   PropertyInfo sourceField = new PropertyInfo();
+                   sourceField.setNamespace(RIDER_NAMESPACE);
+                   sourceField.setName("Source_Field");
+                   sourceField.setType(PropertyInfo.STRING_CLASS);
+                   sourceField.setValue("Octane Lending");
+                   quoteInfo.addProperty(sourceField);
+                   PropertyInfo agentID = new PropertyInfo();
+                   agentID.setNamespace(RIDER_NAMESPACE);
+                   agentID.setName("Agent_ID");
+                   agentID.setType(PropertyInfo.STRING_CLASS);
+                   agentID.setValue("");
+                   quoteInfo.addProperty(agentID);
+                   PropertyInfo subAgentID = new PropertyInfo();
+                   subAgentID.setNamespace(RIDER_NAMESPACE);
+                   subAgentID.setName("Sub_Agent_ID");
+                   subAgentID.setType(PropertyInfo.STRING_CLASS);
+                   subAgentID.setValue("1142");
+                   quoteInfo.addProperty(subAgentID);
+                   comparativeRaterRequest.addSoapObject(quoteInfo);
+
+                   SoapObject driver = new SoapObject(RIDER_NAMESPACE, "driver");
+                   PropertyInfo insuredmailID = new PropertyInfo();
+                   insuredmailID.setNamespace(RIDER_NAMESPACE);
+                   insuredmailID.setName("insuredmailID");
+                   insuredmailID.setType(PropertyInfo.STRING_CLASS);
+//                   insuredmailID.setValue("mosheroff@rider.com");
+                   insuredmailID.setValue(quoteLine[18]);
+                   driver.addProperty(insuredmailID);
+                   PropertyInfo firstName = new PropertyInfo();
+                   firstName.setNamespace(RIDER_NAMESPACE);
+                   firstName.setName("FirstName");
+                   firstName.setType(PropertyInfo.STRING_CLASS);
+//                   firstName.setValue("MichaelTest");
+                   firstName.setValue(quoteLine[16]);
+                   driver.addProperty(firstName);
+                   PropertyInfo lastName = new PropertyInfo();
+                   lastName.setNamespace(RIDER_NAMESPACE);
+                   lastName.setName("LastName");
+                   lastName.setType(PropertyInfo.STRING_CLASS);
+//                   lastName.setValue("OsheroffTest");
+                   lastName.setValue(quoteLine[17]);
+                   driver.addProperty(lastName);
+                   PropertyInfo suffix = new PropertyInfo();
+                   suffix.setNamespace(RIDER_NAMESPACE);
+                   suffix.setName("Suffix");
+                   suffix.setType(PropertyInfo.STRING_CLASS);
+                   suffix.setValue("");
+                   driver.addProperty(suffix);
+                   PropertyInfo insuredDOB = new PropertyInfo();
+                   insuredDOB.setNamespace(RIDER_NAMESPACE);
+                   insuredDOB.setName("InsuredDOB");
+                   insuredDOB.setType(PropertyInfo.STRING_CLASS);
+//                 need to fix date of birth
+                   insuredDOB.setValue("1961-07-15");
+                   driver.addProperty(insuredDOB);
+                   PropertyInfo maritalStatus = new PropertyInfo();
+                   maritalStatus.setNamespace(RIDER_NAMESPACE);
+                   maritalStatus.setName("MaritalStatus");
+                   maritalStatus.setType(PropertyInfo.STRING_CLASS);
+//                   maritalStatus.setValue("M");
+                   maritalStatus.setValue(quoteLine[7]);
+                   driver.addProperty(maritalStatus);
+                   PropertyInfo gender = new PropertyInfo();
+                   gender.setNamespace(RIDER_NAMESPACE);
+                   gender.setName("Gender");
+                   gender.setType(PropertyInfo.STRING_CLASS);
+//                   gender.setValue("M");
+                   gender.setValue(quoteLine[6]);
+                   driver.addProperty(gender);
+                   PropertyInfo zip = new PropertyInfo();
+                   zip.setNamespace(RIDER_NAMESPACE);
+                   zip.setName("Zip");
+                   zip.setType(PropertyInfo.STRING_CLASS);
+//                   zip.setValue("20759");
+                   zip.setValue(quoteLine[2]);
+                   driver.addProperty(zip);
+                   PropertyInfo city = new PropertyInfo();
+                   city.setNamespace(RIDER_NAMESPACE);
+                   city.setName("City");
+                   city.setType(PropertyInfo.STRING_CLASS);
+//                   city.setValue("FULTON");
+                   city.setValue(quoteLine[3]);
+                   driver.addProperty(city);
+                   PropertyInfo county = new PropertyInfo();
+                   county.setNamespace(RIDER_NAMESPACE);
+                   county.setType(PropertyInfo.STRING_CLASS);
+                   county.setName("County");
+//                   county.setValue("HOWARD");
+                   county.setValue(quoteLine[4]);
+                   driver.addProperty(county);
+                   PropertyInfo state = new PropertyInfo();
+                   state.setNamespace(RIDER_NAMESPACE);
+                   state.setType(PropertyInfo.STRING_CLASS);
+                   state.setName("State");
+//                   state.setValue("MD");
+                   state.setValue(quoteLine[1]);
+                   driver.addProperty(state);
+                   PropertyInfo existingPolicyHolder = new PropertyInfo();
+                   existingPolicyHolder.setNamespace(RIDER_NAMESPACE);
+                   existingPolicyHolder.setName("ExistingPolicyHolder");
+                   existingPolicyHolder.setType(PropertyInfo.STRING_CLASS);
+                   existingPolicyHolder.setValue("False");
+                   driver.addProperty(existingPolicyHolder);
+                   SoapObject license = new SoapObject(RIDER_NAMESPACE, "License");
+                   PropertyInfo licensestate = new PropertyInfo();
+                   licensestate.setNamespace(RIDER_NAMESPACE);
+                   licensestate.setType(PropertyInfo.STRING_CLASS);
+                   licensestate.setName("LicenseState");
+//                   licensestate.setValue("");
+                   licensestate.setValue(quoteLine[1]);
+                   license.addProperty(licensestate);
+                   PropertyInfo licensestatus = new PropertyInfo();
+                   licensestatus.setNamespace(RIDER_NAMESPACE);
+                   licensestatus.setType(PropertyInfo.STRING_CLASS);
+                   licensestatus.setName("LicenseStatus");
+                   licensestatus.setValue("");
+                   license.addProperty(licensestatus);
+                   driver.addSoapObject(license);
+                   PropertyInfo additionalOperator = new PropertyInfo();
+                   additionalOperator.setNamespace((RIDER_NAMESPACE));
+                   additionalOperator.setName("AdditionalOperator");
+                   additionalOperator.setType(PropertyInfo.STRING_CLASS);
+                   additionalOperator.setValue("N");
+                   driver.addProperty(additionalOperator);
+                   PropertyInfo validMCLicense = new PropertyInfo();
+                   validMCLicense.setNamespace(RIDER_NAMESPACE);
+                   validMCLicense.setName("ValidMotorcycleLicense");
+                   validMCLicense.setType(PropertyInfo.STRING_CLASS);
+                   validMCLicense.setValue("Y");
+                   driver.addProperty(validMCLicense);
+                   PropertyInfo validMCPermit = new PropertyInfo();
+                   validMCPermit.setNamespace(RIDER_NAMESPACE);
+                   validMCPermit.setName("ValidMotorcyclePermit");
+                   validMCPermit.setType(PropertyInfo.STRING_CLASS);
+                   validMCPermit.setValue("Y");
+                   driver.addProperty(validMCPermit);
+                   PropertyInfo numOfViolations = new PropertyInfo();
+                   numOfViolations.setNamespace(RIDER_NAMESPACE);
+                   numOfViolations.setName("NumberOfViolations");
+                   numOfViolations.setType(PropertyInfo.STRING_CLASS);
+//                   numOfViolations.setValue("0");
+                   if (quoteLine[15] == "Y") {
+                       numOfViolations.setValue("0");
+                   } else {
+                       numOfViolations.setValue("2");
+                   }
+                   driver.addProperty(numOfViolations);
+                   PropertyInfo numOfAccidents = new PropertyInfo();
+                   numOfAccidents.setNamespace(RIDER_NAMESPACE);
+                   numOfAccidents.setName("NumberOfAccidents");
+                   numOfAccidents.setType(PropertyInfo.STRING_CLASS);
+                   numOfAccidents.setValue("0");
+                   driver.addProperty(numOfAccidents);
+                   PropertyInfo defDriverDisc = new PropertyInfo();
+                   defDriverDisc.setNamespace(RIDER_NAMESPACE);
+                   defDriverDisc.setName("DDCD");
+                   defDriverDisc.setType(PropertyInfo.STRING_CLASS);
+                   defDriverDisc.setValue("");
+                   driver.addProperty(defDriverDisc);
+                   PropertyInfo mopedLicense = new PropertyInfo();
+                   mopedLicense.setNamespace(RIDER_NAMESPACE);
+                   mopedLicense.setName("Valid_Moped_License");
+                   mopedLicense.setType(PropertyInfo.STRING_CLASS);
+                   mopedLicense.setValue("");
+                   driver.addProperty(mopedLicense);
+                   PropertyInfo mopedPermit = new PropertyInfo();
+                   mopedPermit.setNamespace(RIDER_NAMESPACE);
+                   mopedPermit.setName("Valid_Moped_Permit");
+                   mopedPermit.setType(PropertyInfo.STRING_CLASS);
+                   mopedPermit.setValue("");
+                   driver.addProperty(mopedPermit);
+                   comparativeRaterRequest.addSoapObject(driver);
+
+                   SoapObject vehicle = new SoapObject(RIDER_NAMESPACE, "vehicle");
+                   PropertyInfo vin = new PropertyInfo();
+                   vin.setNamespace(RIDER_NAMESPACE);
+                   vin.setName("VIN");
+                   vin.setType(PropertyInfo.STRING_CLASS);
+                   vin.setValue("");
+                   vehicle.addProperty(vin);
+                   PropertyInfo year = new PropertyInfo();
+                   year.setNamespace(RIDER_NAMESPACE);
+                   year.setName("Year");
+                   year.setType(PropertyInfo.STRING_CLASS);
+//                   year.setValue("2008");
+                   year.setValue(quoteLine[8]);
+                   vehicle.addProperty(year);
+                   PropertyInfo make = new PropertyInfo();
+                   make.setNamespace(RIDER_NAMESPACE);
+                   make.setName("Make");
+                   make.setType(PropertyInfo.STRING_CLASS);
+//                   make.setValue("HARLEY-DAVIDSON");
+                   make.setValue(quoteLine[9]);
+                   vehicle.addProperty(make);
+                   PropertyInfo model = new PropertyInfo();
+                   model.setNamespace(RIDER_NAMESPACE);
+                   model.setName("Model");
+                   model.setType(PropertyInfo.STRING_CLASS);
+//                   model.setValue("FXDL");
+                   model.setValue(quoteLine[10]);
+                   vehicle.addProperty(model);
+                   PropertyInfo cc = new PropertyInfo();
+                   cc.setNamespace(RIDER_NAMESPACE);
+                   cc.setName("CC");
+                   cc.setType(PropertyInfo.STRING_CLASS);
+//                   cc.setValue("1584");
+                   cc.setValue(quoteLine[11]);
+                   vehicle.addProperty(cc);
+                   PropertyInfo ftcc = new PropertyInfo();
+                   ftcc.setNamespace(RIDER_NAMESPACE);
+                   ftcc.setName("Ftcc");
+                   ftcc.setType(PropertyInfo.STRING_CLASS);
+//                 need to adjust this when we get full coverage field loaded in.
+                   ftcc.setValue("N");
+                   vehicle.addProperty(ftcc);
+                   PropertyInfo trike = new PropertyInfo();
+                   trike.setNamespace(RIDER_NAMESPACE);
+                   trike.setName("Trike");
+                   trike.setType(PropertyInfo.STRING_CLASS);
+                   trike.setValue("N");
+                   vehicle.addProperty(trike);
+                   PropertyInfo currentlyInsured = new PropertyInfo();
+                   currentlyInsured.setNamespace(RIDER_NAMESPACE);
+                   currentlyInsured.setName("CycleCurrentlyInsured");
+                   currentlyInsured.setType(PropertyInfo.STRING_CLASS);
+                   currentlyInsured.setValue("N");
+                   vehicle.addProperty(currentlyInsured);
+                   PropertyInfo assignedDriver = new PropertyInfo();
+                   assignedDriver.setNamespace(RIDER_NAMESPACE);
+                   assignedDriver.setName("AssignedDriver");
+                   assignedDriver.setType(PropertyInfo.STRING_CLASS);
+                   assignedDriver.setValue("1");
+                   vehicle.addProperty(assignedDriver);
+                   PropertyInfo onRoadUse = new PropertyInfo();
+                   onRoadUse.setNamespace(RIDER_NAMESPACE);
+                   onRoadUse.setName("on_road_use");
+                   onRoadUse.setType(PropertyInfo.STRING_CLASS);
+                   onRoadUse.setValue("Y");
+                   vehicle.addProperty(onRoadUse);
+                   PropertyInfo intendOnRoadUse = new PropertyInfo();
+                   intendOnRoadUse.setNamespace(RIDER_NAMESPACE);
+                   intendOnRoadUse.setName("intend_to_on_road_use");
+                   intendOnRoadUse.setType(PropertyInfo.STRING_CLASS);
+                   intendOnRoadUse.setValue("Y");
+                   vehicle.addProperty(intendOnRoadUse);
+                   SoapObject coverage1 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                   PropertyInfo coverageName1 = new PropertyInfo();
+                   coverageName1.setNamespace(RIDER_NAMESPACE);
+                   coverageName1.setName("CoverageName");
+                   coverageName1.setType(PropertyInfo.STRING_CLASS);
+                   coverageName1.setValue("BI");
+                   coverage1.addProperty(coverageName1);
+                   PropertyInfo limit1 = new PropertyInfo();
+                   limit1.setNamespace(RIDER_NAMESPACE);
+                   limit1.setName("limit");
+                   limit1.setType(PropertyInfo.STRING_CLASS);
+                   limit1.setValue("30-60");
+                   coverage1.addProperty(limit1);
+                   PropertyInfo deductible1 = new PropertyInfo();
+                   deductible1.setNamespace(RIDER_NAMESPACE);
+                   deductible1.setName("Deductible");
+                   deductible1.setType(PropertyInfo.STRING_CLASS);
+                   deductible1.setValue("N/A");
+                   coverage1.addProperty(deductible1);
+                   vehicle.addSoapObject(coverage1);
+                   SoapObject coverage2 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                   PropertyInfo coverageName2 = new PropertyInfo();
+                   coverageName2.setNamespace(RIDER_NAMESPACE);
+                   coverageName2.setName("CoverageName");
+                   coverageName2.setType(PropertyInfo.STRING_CLASS);
+                   coverageName2.setValue("PD");
+                   coverage2.addProperty(coverageName2);
+                   PropertyInfo limit2 = new PropertyInfo();
+                   limit2.setNamespace(RIDER_NAMESPACE);
+                   limit2.setName("limit");
+                   limit2.setType(PropertyInfo.STRING_CLASS);
+                   limit2.setValue("15");
+                   coverage2.addProperty(limit2);
+                   PropertyInfo deductible2 = new PropertyInfo();
+                   deductible2.setNamespace(RIDER_NAMESPACE);
+                   deductible2.setName("Deductible");
+                   deductible2.setType(PropertyInfo.STRING_CLASS);
+                   deductible2.setValue("N/A");
+                   coverage2.addProperty(deductible2);
+                   vehicle.addSoapObject(coverage2);
+                   SoapObject coverage3 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                   PropertyInfo coverageName3 = new PropertyInfo();
+                   coverageName3.setNamespace(RIDER_NAMESPACE);
+                   coverageName3.setName("CoverageName");
+                   coverageName3.setType(PropertyInfo.STRING_CLASS);
+                   coverageName3.setValue("UMBI/UIMBI");
+                   coverage3.addProperty(coverageName3);
+                   PropertyInfo limit3 = new PropertyInfo();
+                   limit3.setNamespace(RIDER_NAMESPACE);
+                   limit3.setName("limit");
+                   limit3.setType(PropertyInfo.STRING_CLASS);
+                   limit3.setValue("30-60");
+                   coverage3.addProperty(limit3);
+                   PropertyInfo deductible3 = new PropertyInfo();
+                   deductible3.setNamespace(RIDER_NAMESPACE);
+                   deductible3.setName("Deductible");
+                   deductible3.setType(PropertyInfo.STRING_CLASS);
+                   deductible3.setValue("N/A");
+                   coverage3.addProperty(deductible3);
+                   vehicle.addSoapObject(coverage3);
+                   SoapObject coverage4 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                   PropertyInfo coverageName4 = new PropertyInfo();
+                   coverageName4.setNamespace(RIDER_NAMESPACE);
+                   coverageName4.setName("CoverageName");
+                   coverageName4.setType(PropertyInfo.STRING_CLASS);
+                   coverageName4.setValue("UMPD/UIMPD");
+                   coverage4.addProperty(coverageName4);
+                   PropertyInfo limit4 = new PropertyInfo();
+                   limit4.setNamespace(RIDER_NAMESPACE);
+                   limit4.setName("limit");
+                   limit4.setType(PropertyInfo.STRING_CLASS);
+                   limit4.setValue("15");
+                   coverage4.addProperty(limit4);
+                   PropertyInfo deductible4 = new PropertyInfo();
+                   deductible4.setNamespace(RIDER_NAMESPACE);
+                   deductible4.setName("Deductible");
+                   deductible4.setType(PropertyInfo.STRING_CLASS);
+                   deductible4.setValue("N/A");
+                   coverage4.addProperty(deductible4);
+                   vehicle.addSoapObject(coverage4);
+
+                   comparativeRaterRequest.addSoapObject(vehicle);
+
+                   SoapSerializationEnvelope riderenvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+                   HttpTransportSE riderQuoteTransport = new HttpTransportSE(RIDER_URL);
+                   riderQuoteTransport.debug = true;
+
+                   riderenvelope.dotNet = true;
+                   riderenvelope.implicitTypes = true;
+                   riderenvelope.setAddAdornments(false);
+                   riderenvelope.encodingStyle = SoapSerializationEnvelope.XSD;
+                   riderenvelope.setOutputSoapObject(comparativeRaterRequest);
+
+                   try
+
+                   {
+                       riderQuoteTransport.call(RIDER_SOAP_ACTION, riderenvelope);
+                       SoapPrimitive riderresponse = (SoapPrimitive) riderenvelope.getResponse();
+
+                       String requestDump = riderQuoteTransport.requestDump;
+                       String responseDump = riderQuoteTransport.responseDump;
+
+                   } catch (Exception e1){
+                       String requestDump = riderQuoteTransport.requestDump;
+                       String responseDump = riderQuoteTransport.responseDump;
+                       e1.printStackTrace();
+                   }
+
+               }
+
+               catch(Exception e){
+                   e.printStackTrace();
+               }
+
+               final Runnable createUI = new Runnable() {
+                   public void run() {
+                   // do something here
+                   helloWorld.setText("Uploading "+quoteCtr.toString());
+                   }
+               };
+               handler.post(createUI);
+           }
+       };
+       thread.start();
+    }
+//  end of SOAP Call
+
 }

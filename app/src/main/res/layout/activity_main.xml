@@ -58,7 +58,7 @@
         android:text="Enter Birthday"
         android:width="@dimen/abc_text_size_display_1_material"
         android:layout_below="@id/ZipCode"
-        android:paddingTop="10dp"
+        android:paddingTop="15dp"
         />
 
     <RadioGroup
@@ -68,7 +68,10 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/birthday"
         android:layout_alignEnd="@id/textView1"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:paddingTop="20dp"
+        >
+
 
 
         <RadioButton
@@ -98,7 +101,9 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/maritalStatus"
         android:layout_alignEnd="@id/textView1"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:paddingTop="20dp"
+        >
 
 
         <RadioButton
@@ -126,7 +131,7 @@
         android:layout_height="wrap_content"
         android:entries="@array/validYears"
         android:layout_below="@id/gender"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
         />
 
     <TextView
@@ -145,7 +150,7 @@
         android:layout_height="wrap_content"
         android:entries="@array/validMakes"
         android:layout_below="@id/modelYears"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
         />
 
     <Spinner
@@ -154,7 +159,7 @@
         android:layout_height="wrap_content"
         android:entries="@array/validModels"
         android:layout_below="@id/modelMakes"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
         />
 
     <RadioGroup
@@ -164,7 +169,9 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/modelModels"
         android:layout_alignEnd="@id/textView1"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:paddingTop="20dp"
+        >
 
         <RadioButton
             android:id="@+id/FullCoverage"
@@ -216,7 +223,9 @@
         android:text="Calculate Rates"
         android:width="@dimen/abc_text_size_display_1_material"
         android:layout_below="@id/podDisc"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:paddingTop="20dp"
+        />
 
     <Button
         android:id="@+id/submitEvent"
@@ -225,14 +234,27 @@
         android:text="E-mail Quotes to Marketing"
         android:width="@dimen/abc_text_size_display_1_material"
         android:layout_below="@id/submit"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:paddingTop="20dp"
+        />
 
     <Button
+        android:id="@+id/upload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:text="Upload All Saved Quotes to iPOS"
+        android:layout_below="@id/submitEvent"
+        android:paddingTop="20dp"
+        />
+
+    <Button
         android:id="@+id/delete"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="Delete All Saved Quotes"
-        android:layout_below="@id/submitEvent"/>
+        android:layout_below="@id/upload"
+        android:paddingTop="20dp"
+        />
 
 </RelativeLayout>
 
