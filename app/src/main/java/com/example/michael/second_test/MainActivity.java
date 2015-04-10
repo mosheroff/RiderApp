@@ -160,7 +160,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+//                SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
                 birthdayButton.setText(dateFormatter.format(newDate.getTime()));
@@ -289,13 +290,11 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                                     while ((qline = uploadBr.readLine()) != null) {
                                         String[] quoteLine = qline.split(tabchar);
                                         quoteCtr += 1;
-                                        Toast toast1 = Toast.makeText(getApplicationContext(),
-                                                "Uploading Quote " + quoteLine[15] + " " + quoteLine[16], Toast.LENGTH_SHORT);
-                                        toast1.show();
-//                                        if (quoteCtr == 1 && i == 1) {
-                                            uploadQoute(quoteLine, fileName, quoteCtr);
+//                                      Toast toast1 = Toast.makeText(getApplicationContext(),
+//                                            "Uploading Quote " + quoteLine[15] + " " + quoteLine[16], Toast.LENGTH_SHORT);
+//                                      toast1.show();
+                                        uploadQoute(quoteLine, fileName, quoteCtr);
                                         SystemClock.sleep(5000);
-//                                        }
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -781,7 +780,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         Date dateOfBirth = null;
         try {
             String date = birthdayButton.getText().toString();
-            DateFormat format = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+//            DateFormat format = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
             dateOfBirth = format.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -947,6 +947,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             sb.append(tabchar + fname);
             sb.append(tabchar + lname);
             sb.append(tabchar + emailA);
+            sb.append(tabchar + bikeType);
             String output = sb.append("\n").toString();
             fos.write(output.getBytes());
             fos.flush();
@@ -1108,12 +1109,30 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
            public void run() {
                try {
 
+                   final Runnable toastUI = new Runnable() {
+                       public void run() {
+                           Toast toast2 = Toast.makeText(getApplicationContext(),
+                                   "Uploading Quote " + quoteLine[16] + " " + quoteLine[17], Toast.LENGTH_SHORT);
+                           toast2.show();
+                       }
+                   };
+                   handler.post(toastUI);
 
                    String RIDER_METHOD_NAME = "ComparativeRater";
                    String RIDER_NAMESPACE = "http://www.rider.com/RIDER_QUOTE_RATER";
                    String RIDER_SOAP_ACTION = "http://www.rider.com/RIDER_QUOTE_RATER/ComparativeRater";
                    String RIDER_URL = "https://uat.riderpos.net:444/RiderComparativeRater/services/RiderComparativeRater?wsdl";
 
+                   String minBILimits = "";
+                   String minPDLimits = "";
+                   String rateState = quoteLine[1];
+                   if (rateState.equals("DE")) {
+                       minBILimits = "15-30";
+                       minPDLimits = "10";
+                   } else if (rateState.equals("IN")) {
+                       minBILimits = "25-50";
+                       minPDLimits = "10";
+                   }
                    SoapObject comparativeRaterRequest = new SoapObject(RIDER_NAMESPACE, "RiderComparativeRaterRequest");
                    SoapObject quoteInfo = new SoapObject(RIDER_NAMESPACE, "quoteinfo");
 
@@ -1122,7 +1141,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    requestID.setType(PropertyInfo.STRING_CLASS);
                    requestID.setName("RequestID");
 //                   requestID.setValue("RiderRemote-"+fileName+"-"+quoteCtr.toString());
-                   requestID.setValue("OctaneLending-132D-105112.37-174-Q7"+quoteCtr.toString());
+                   requestID.setValue("OctaneLending-132D-105112.37-174-Q12"+quoteCtr.toString());
                    quoteInfo.addProperty(requestID);
                    PropertyInfo requestType = new PropertyInfo();
                    requestType.setNamespace(RIDER_NAMESPACE);
@@ -1147,8 +1166,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    policyEffectiveDate.setNamespace(RIDER_NAMESPACE);
                    policyEffectiveDate.setName("policyEffectiveDate");
                    policyEffectiveDate.setType(PropertyInfo.STRING_CLASS);
-//                 need to fix date
-                   policyEffectiveDate.setValue("2015-04-20");
+//                   policyEffectiveDate.setValue("2015-04-20");
+                   Calendar today = Calendar.getInstance();
+                   SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                   policyEffectiveDate.setValue(dateFormatter.format(today.getTime()));
                    quoteInfo.addProperty(policyEffectiveDate);
                    PropertyInfo sourceField = new PropertyInfo();
                    sourceField.setNamespace(RIDER_NAMESPACE);
@@ -1202,8 +1223,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    insuredDOB.setNamespace(RIDER_NAMESPACE);
                    insuredDOB.setName("InsuredDOB");
                    insuredDOB.setType(PropertyInfo.STRING_CLASS);
-//                 need to fix date of birth
-                   insuredDOB.setValue("1961-07-15");
+//                   insuredDOB.setValue("1961-07-15");
+                   insuredDOB.setValue(quoteLine[5]);
                    driver.addProperty(insuredDOB);
                    PropertyInfo maritalStatus = new PropertyInfo();
                    maritalStatus.setNamespace(RIDER_NAMESPACE);
@@ -1251,7 +1272,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    existingPolicyHolder.setNamespace(RIDER_NAMESPACE);
                    existingPolicyHolder.setName("ExistingPolicyHolder");
                    existingPolicyHolder.setType(PropertyInfo.STRING_CLASS);
-                   existingPolicyHolder.setValue("False");
+                   existingPolicyHolder.setValue("N");
                    driver.addProperty(existingPolicyHolder);
                    SoapObject license = new SoapObject(RIDER_NAMESPACE, "License");
                    PropertyInfo licensestate = new PropertyInfo();
@@ -1291,7 +1312,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    numOfViolations.setName("NumberOfViolations");
                    numOfViolations.setType(PropertyInfo.STRING_CLASS);
 //                   numOfViolations.setValue("0");
-                   if (quoteLine[15] == "Y") {
+                   if (quoteLine[15].equals("Y")) {
                        numOfViolations.setValue("0");
                    } else {
                        numOfViolations.setValue("2");
@@ -1363,7 +1384,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    ftcc.setName("Ftcc");
                    ftcc.setType(PropertyInfo.STRING_CLASS);
 //                 need to adjust this when we get full coverage field loaded in.
-                   ftcc.setValue("N");
+//                   ftcc.setValue("N");
+                   ftcc.setValue(quoteLine[12]);
                    vehicle.addProperty(ftcc);
                    PropertyInfo trike = new PropertyInfo();
                    trike.setNamespace(RIDER_NAMESPACE);
@@ -1375,7 +1397,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    currentlyInsured.setNamespace(RIDER_NAMESPACE);
                    currentlyInsured.setName("CycleCurrentlyInsured");
                    currentlyInsured.setType(PropertyInfo.STRING_CLASS);
-                   currentlyInsured.setValue("N");
+//                   currentlyInsured.setValue("N");
+                   if (quoteLine[13].equals("Y")){
+                       currentlyInsured.setValue("Y");
+                   } else {
+                       currentlyInsured.setValue("N");
+                   }
                    vehicle.addProperty(currentlyInsured);
                    PropertyInfo assignedDriver = new PropertyInfo();
                    assignedDriver.setNamespace(RIDER_NAMESPACE);
@@ -1475,6 +1502,56 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    deductible4.setValue("N/A");
                    coverage4.addProperty(deductible4);
                    vehicle.addSoapObject(coverage4);
+                   if (quoteLine[12].equals("Y")){
+                       SoapObject coverage9 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName9 = new PropertyInfo();
+                       coverageName9.setNamespace(RIDER_NAMESPACE);
+                       coverageName9.setName("CoverageName");
+                       coverageName9.setType(PropertyInfo.STRING_CLASS);
+                       coverageName9.setValue("COL");
+                       coverage9.addProperty(coverageName9);
+                       PropertyInfo limit9 = new PropertyInfo();
+                       limit9.setNamespace(RIDER_NAMESPACE);
+                       limit9.setName("limit");
+                       limit9.setType(PropertyInfo.STRING_CLASS);
+                       limit9.setValue("N/A");
+                       coverage9.addProperty(limit9);
+                       PropertyInfo deductible9 = new PropertyInfo();
+                       deductible9.setNamespace(RIDER_NAMESPACE);
+                       deductible9.setName("Deductible");
+                       deductible9.setType(PropertyInfo.STRING_CLASS);
+                       if (!quoteLine[19].equals("SPORT")) {
+                           deductible9.setValue("500");
+                       } else {
+                           deductible9.setValue("750");
+                       }
+                       coverage9.addProperty(deductible9);
+                       vehicle.addSoapObject(coverage9);
+                       SoapObject coverage10 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName10 = new PropertyInfo();
+                       coverageName10.setNamespace(RIDER_NAMESPACE);
+                       coverageName10.setName("CoverageName");
+                       coverageName10.setType(PropertyInfo.STRING_CLASS);
+                       coverageName10.setValue("CMP");
+                       coverage10.addProperty(coverageName10);
+                       PropertyInfo limit10 = new PropertyInfo();
+                       limit10.setNamespace(RIDER_NAMESPACE);
+                       limit10.setName("limit");
+                       limit10.setType(PropertyInfo.STRING_CLASS);
+                       limit10.setValue("N/A");
+                       coverage10.addProperty(limit10);
+                       PropertyInfo deductible10 = new PropertyInfo();
+                       deductible10.setNamespace(RIDER_NAMESPACE);
+                       deductible10.setName("Deductible");
+                       deductible10.setType(PropertyInfo.STRING_CLASS);
+                       if (!quoteLine[19].equals("SPORT")) {
+                           deductible10.setValue("500");
+                       } else {
+                           deductible10.setValue("750");
+                       }
+                       coverage10.addProperty(deductible10);
+                       vehicle.addSoapObject(coverage10);
+                   }
 
                    comparativeRaterRequest.addSoapObject(vehicle);
 
@@ -1493,14 +1570,14 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                    {
                        riderQuoteTransport.call(RIDER_SOAP_ACTION, riderenvelope);
-                       SoapPrimitive riderresponse = (SoapPrimitive) riderenvelope.getResponse();
+//                       SoapPrimitive riderresponse = (SoapPrimitive) riderenvelope.getResponse();
 
-                       String requestDump = riderQuoteTransport.requestDump;
-                       String responseDump = riderQuoteTransport.responseDump;
+//                       String requestDump = riderQuoteTransport.requestDump;
+//                       String responseDump = riderQuoteTransport.responseDump;
 
                    } catch (Exception e1){
-                       String requestDump = riderQuoteTransport.requestDump;
-                       String responseDump = riderQuoteTransport.responseDump;
+//                       String requestDump = riderQuoteTransport.requestDump;
+//                       String responseDump = riderQuoteTransport.responseDump;
                        e1.printStackTrace();
                    }
 
@@ -1509,7 +1586,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                catch(Exception e){
                    e.printStackTrace();
                }
-
+/*
                final Runnable createUI = new Runnable() {
                    public void run() {
                    // do something here
@@ -1517,6 +1594,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    }
                };
                handler.post(createUI);
+*/
            }
        };
        thread.start();
