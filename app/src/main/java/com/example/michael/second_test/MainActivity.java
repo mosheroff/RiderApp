@@ -1108,7 +1108,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
        thread = new Thread() {
            public void run() {
                try {
-
+/*
                    final Runnable toastUI = new Runnable() {
                        public void run() {
                            Toast toast2 = Toast.makeText(getApplicationContext(),
@@ -1117,7 +1117,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                        }
                    };
                    handler.post(toastUI);
-
+*/
                    String RIDER_METHOD_NAME = "ComparativeRater";
                    String RIDER_NAMESPACE = "http://www.rider.com/RIDER_QUOTE_RATER";
                    String RIDER_SOAP_ACTION = "http://www.rider.com/RIDER_QUOTE_RATER/ComparativeRater";
@@ -1125,13 +1125,80 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                    String minBILimits = "";
                    String minPDLimits = "";
+                   String minUMBILimits = "";
+                   String minUIMBILimits = "";
+                   String minUMPDLimits = "";
+                   String umTag = "";
+                   String uimTag = "";
+                   String umpdTag = "";
                    String rateState = quoteLine[1];
                    if (rateState.equals("DE")) {
                        minBILimits = "15-30";
                        minPDLimits = "10";
+                       minUMBILimits = "15-30";
+                       minUIMBILimits = "15-30";
+                       minUMPDLimits = "10";
+                       umTag = "UMBI/UIMBI";
+                       umpdTag = "UMPD";
                    } else if (rateState.equals("IN")) {
                        minBILimits = "25-50";
                        minPDLimits = "10";
+                       minUMBILimits = "25-50";
+                       minUIMBILimits = "50-50";
+                       minUMPDLimits = "10";
+                       umTag = "UMBI";
+                       uimTag = "UIMBI";
+                       umpdTag = "UMPD";
+                   } else if (rateState.equals("MD")) {
+                       minBILimits = "30-60";
+                       minPDLimits = "15";
+                       minUMBILimits = "30-60";
+                       minUMPDLimits = "15";
+                       umTag = "UMBI/UIMBI";
+                       umpdTag = "UMPD/UIMPD";
+                   } else if (rateState.equals("MI")) {
+                       minBILimits = "20-40";
+                       minPDLimits = "10";
+                       minUMBILimits = "20-40";
+                       minUMPDLimits = "";
+                       umTag = "UMBI/UIMBI";
+                   } else if (rateState.equals("NJ")) {
+                       minBILimits = "15-30";
+                       minPDLimits = "5";
+                       minUMBILimits = "15-30";
+                       minUMPDLimits = "5";
+                       umTag = "BIUM/BIUIM";
+                       umpdTag = "PDUM/PDUIM";
+                   } else if (rateState.equals("OH")) {
+                       minBILimits = "25-50";
+                       minPDLimits = "25";
+                       minUMBILimits = "12.5-25";
+                       minUIMBILimits = "12.5-25";
+                       umTag = "UMBI";
+                       uimTag = "UIMBI";
+                       umpdTag = "UMPD";
+                   } else if (rateState.equals("PA")) {
+                       minBILimits = "15-30";
+                       minPDLimits = "5";
+                       minUMBILimits = "15-30";
+                       umTag = "UMN";
+                       uimTag = "UIMN";
+                   } else if (rateState.equals("VA")) {
+                       minBILimits = "25-50";
+                       minPDLimits = "20";
+                       minUMBILimits = "25-50";
+                       minUMPDLimits = "20";
+                       umTag = "BIUM/BIUIM";
+                       umpdTag = "PDUM/PDUIM";
+                   } else if (rateState.equals("WV")) {
+                       minBILimits = "20-40";
+                       minPDLimits = "10";
+                       minUMBILimits = "20-40";
+                       minUIMBILimits = "20-40";
+                       minUMPDLimits = "10";
+                       umTag = "UMBI";
+                       uimTag = "UIMBI";
+                       umpdTag = "UMPD";
                    }
                    SoapObject comparativeRaterRequest = new SoapObject(RIDER_NAMESPACE, "RiderComparativeRaterRequest");
                    SoapObject quoteInfo = new SoapObject(RIDER_NAMESPACE, "quoteinfo");
@@ -1433,7 +1500,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    limit1.setNamespace(RIDER_NAMESPACE);
                    limit1.setName("limit");
                    limit1.setType(PropertyInfo.STRING_CLASS);
-                   limit1.setValue("30-60");
+                   limit1.setValue(minBILimits);
                    coverage1.addProperty(limit1);
                    PropertyInfo deductible1 = new PropertyInfo();
                    deductible1.setNamespace(RIDER_NAMESPACE);
@@ -1453,7 +1520,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    limit2.setNamespace(RIDER_NAMESPACE);
                    limit2.setName("limit");
                    limit2.setType(PropertyInfo.STRING_CLASS);
-                   limit2.setValue("15");
+                   limit2.setValue(minPDLimits);
                    coverage2.addProperty(limit2);
                    PropertyInfo deductible2 = new PropertyInfo();
                    deductible2.setNamespace(RIDER_NAMESPACE);
@@ -1467,13 +1534,13 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    coverageName3.setNamespace(RIDER_NAMESPACE);
                    coverageName3.setName("CoverageName");
                    coverageName3.setType(PropertyInfo.STRING_CLASS);
-                   coverageName3.setValue("UMBI/UIMBI");
+                   coverageName3.setValue(umTag);
                    coverage3.addProperty(coverageName3);
                    PropertyInfo limit3 = new PropertyInfo();
                    limit3.setNamespace(RIDER_NAMESPACE);
                    limit3.setName("limit");
                    limit3.setType(PropertyInfo.STRING_CLASS);
-                   limit3.setValue("30-60");
+                   limit3.setValue(minUMBILimits);
                    coverage3.addProperty(limit3);
                    PropertyInfo deductible3 = new PropertyInfo();
                    deductible3.setNamespace(RIDER_NAMESPACE);
@@ -1482,26 +1549,157 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    deductible3.setValue("N/A");
                    coverage3.addProperty(deductible3);
                    vehicle.addSoapObject(coverage3);
-                   SoapObject coverage4 = new SoapObject(RIDER_NAMESPACE, "Coverage");
-                   PropertyInfo coverageName4 = new PropertyInfo();
-                   coverageName4.setNamespace(RIDER_NAMESPACE);
-                   coverageName4.setName("CoverageName");
-                   coverageName4.setType(PropertyInfo.STRING_CLASS);
-                   coverageName4.setValue("UMPD/UIMPD");
-                   coverage4.addProperty(coverageName4);
-                   PropertyInfo limit4 = new PropertyInfo();
-                   limit4.setNamespace(RIDER_NAMESPACE);
-                   limit4.setName("limit");
-                   limit4.setType(PropertyInfo.STRING_CLASS);
-                   limit4.setValue("15");
-                   coverage4.addProperty(limit4);
-                   PropertyInfo deductible4 = new PropertyInfo();
-                   deductible4.setNamespace(RIDER_NAMESPACE);
-                   deductible4.setName("Deductible");
-                   deductible4.setType(PropertyInfo.STRING_CLASS);
-                   deductible4.setValue("N/A");
-                   coverage4.addProperty(deductible4);
-                   vehicle.addSoapObject(coverage4);
+                   if ((rateState.equals("IN")) || (rateState.equals("OH")) || (rateState.equals("PA")) || (rateState.equals("WV")) ) {
+                       SoapObject coverage4 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName4 = new PropertyInfo();
+                       coverageName4.setNamespace(RIDER_NAMESPACE);
+                       coverageName4.setName("CoverageName");
+                       coverageName4.setType(PropertyInfo.STRING_CLASS);
+                       coverageName4.setValue(uimTag);
+                       coverage4.addProperty(coverageName4);
+                       PropertyInfo limit5 = new PropertyInfo();
+                       limit5.setNamespace(RIDER_NAMESPACE);
+                       limit5.setName("limit");
+                       limit5.setType(PropertyInfo.STRING_CLASS);
+                       limit5.setValue(minUIMBILimits);
+                       coverage4.addProperty(limit5);
+                       PropertyInfo deductible4 = new PropertyInfo();
+                       deductible4.setNamespace(RIDER_NAMESPACE);
+                       deductible4.setName("Deductible");
+                       deductible4.setType(PropertyInfo.STRING_CLASS);
+                       deductible4.setValue("N/A");
+                       coverage4.addProperty(deductible4);
+                       vehicle.addSoapObject(coverage4);
+                   }
+                   SoapObject coverage5 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                   PropertyInfo coverageName5 = new PropertyInfo();
+                   coverageName5.setNamespace(RIDER_NAMESPACE);
+                   coverageName5.setName("CoverageName");
+                   coverageName5.setType(PropertyInfo.STRING_CLASS);
+                   coverageName5.setValue("UMPD/UIMPD");
+                   coverage5.addProperty(coverageName5);
+                   PropertyInfo limit5 = new PropertyInfo();
+                   limit5.setNamespace(RIDER_NAMESPACE);
+                   limit5.setName("limit");
+                   limit5.setType(PropertyInfo.STRING_CLASS);
+                   limit5.setValue("15");
+                   coverage5.addProperty(limit5);
+                   PropertyInfo deductible5 = new PropertyInfo();
+                   deductible5.setNamespace(RIDER_NAMESPACE);
+                   deductible5.setName("Deductible");
+                   deductible5.setType(PropertyInfo.STRING_CLASS);
+                   deductible5.setValue("N/A");
+                   coverage5.addProperty(deductible5);
+                   vehicle.addSoapObject(coverage5);
+                   if ((!rateState.equals("MI")) && (!rateState.equals("PA")) ) {
+                       SoapObject coverage6 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName6 = new PropertyInfo();
+                       coverageName6.setNamespace(RIDER_NAMESPACE);
+                       coverageName6.setName("CoverageName");
+                       coverageName6.setType(PropertyInfo.STRING_CLASS);
+                       coverageName6.setValue(umpdTag);
+                       coverage6.addProperty(coverageName6);
+                       PropertyInfo limit6 = new PropertyInfo();
+                       limit6.setNamespace(RIDER_NAMESPACE);
+                       limit6.setName("limit");
+                       limit6.setType(PropertyInfo.STRING_CLASS);
+                       limit6.setValue(minUMPDLimits);
+                       coverage6.addProperty(limit6);
+                       PropertyInfo deductible6 = new PropertyInfo();
+                       deductible6.setNamespace(RIDER_NAMESPACE);
+                       deductible6.setName("Deductible");
+                       deductible6.setType(PropertyInfo.STRING_CLASS);
+                       deductible6.setValue("N/A");
+                       coverage6.addProperty(deductible6);
+                       vehicle.addSoapObject(coverage6);
+                   }
+                   if ((rateState.equals("WV")) ) {
+                       SoapObject coverage6 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName6 = new PropertyInfo();
+                       coverageName6.setNamespace(RIDER_NAMESPACE);
+                       coverageName6.setName("CoverageName");
+                       coverageName6.setType(PropertyInfo.STRING_CLASS);
+                       coverageName6.setValue("UIMPD");
+                       coverage6.addProperty(coverageName6);
+                       PropertyInfo limit6 = new PropertyInfo();
+                       limit6.setNamespace(RIDER_NAMESPACE);
+                       limit6.setName("limit");
+                       limit6.setType(PropertyInfo.STRING_CLASS);
+                       limit6.setValue(minUMPDLimits);
+                       coverage6.addProperty(limit6);
+                       PropertyInfo deductible6 = new PropertyInfo();
+                       deductible6.setNamespace(RIDER_NAMESPACE);
+                       deductible6.setName("Deductible");
+                       deductible6.setType(PropertyInfo.STRING_CLASS);
+                       deductible6.setValue("N/A");
+                       coverage6.addProperty(deductible6);
+                       vehicle.addSoapObject(coverage6);
+                   }
+                   if ((rateState.equals("PA")) ) {
+                       SoapObject coverage6 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName6 = new PropertyInfo();
+                       coverageName6.setNamespace(RIDER_NAMESPACE);
+                       coverageName6.setName("CoverageName");
+                       coverageName6.setType(PropertyInfo.STRING_CLASS);
+                       coverageName6.setValue("UMS");
+                       coverage6.addProperty(coverageName6);
+                       PropertyInfo limit6 = new PropertyInfo();
+                       limit6.setNamespace(RIDER_NAMESPACE);
+                       limit6.setName("limit");
+                       limit6.setType(PropertyInfo.STRING_CLASS);
+                       limit6.setValue("Rejected");
+                       coverage6.addProperty(limit6);
+                       PropertyInfo deductible6 = new PropertyInfo();
+                       deductible6.setNamespace(RIDER_NAMESPACE);
+                       deductible6.setName("Deductible");
+                       deductible6.setType(PropertyInfo.STRING_CLASS);
+                       deductible6.setValue("N/A");
+                       coverage6.addProperty(deductible6);
+                       vehicle.addSoapObject(coverage6);
+                       SoapObject coverage7 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName7 = new PropertyInfo();
+                       coverageName7.setNamespace(RIDER_NAMESPACE);
+                       coverageName7.setName("CoverageName");
+                       coverageName7.setType(PropertyInfo.STRING_CLASS);
+                       coverageName7.setValue("UIMS");
+                       coverage7.addProperty(coverageName6);
+                       PropertyInfo limit7 = new PropertyInfo();
+                       limit7.setNamespace(RIDER_NAMESPACE);
+                       limit7.setName("limit");
+                       limit7.setType(PropertyInfo.STRING_CLASS);
+                       limit7.setValue("Rejected");
+                       coverage7.addProperty(limit7);
+                       PropertyInfo deductible7 = new PropertyInfo();
+                       deductible7.setNamespace(RIDER_NAMESPACE);
+                       deductible7.setName("Deductible");
+                       deductible7.setType(PropertyInfo.STRING_CLASS);
+                       deductible7.setValue("N/A");
+                       coverage7.addProperty(deductible7);
+                       vehicle.addSoapObject(coverage7);
+                   }
+                   if ((rateState.equals("DE")) ) {
+                       SoapObject coverage6 = new SoapObject(RIDER_NAMESPACE, "Coverage");
+                       PropertyInfo coverageName6 = new PropertyInfo();
+                       coverageName6.setNamespace(RIDER_NAMESPACE);
+                       coverageName6.setName("CoverageName");
+                       coverageName6.setType(PropertyInfo.STRING_CLASS);
+                       coverageName6.setValue("PIPUR");
+                       coverage6.addProperty(coverageName6);
+                       PropertyInfo limit6 = new PropertyInfo();
+                       limit6.setNamespace(RIDER_NAMESPACE);
+                       limit6.setName("limit");
+                       limit6.setType(PropertyInfo.STRING_CLASS);
+                       limit6.setValue("15-30");
+                       coverage6.addProperty(limit6);
+                       PropertyInfo deductible6 = new PropertyInfo();
+                       deductible6.setNamespace(RIDER_NAMESPACE);
+                       deductible6.setName("Deductible");
+                       deductible6.setType(PropertyInfo.STRING_CLASS);
+                       deductible6.setValue("10000");
+                       coverage6.addProperty(deductible6);
+                       vehicle.addSoapObject(coverage6);
+                   }
+//                 FTCC Here.
                    if (quoteLine[12].equals("Y")){
                        SoapObject coverage9 = new SoapObject(RIDER_NAMESPACE, "Coverage");
                        PropertyInfo coverageName9 = new PropertyInfo();
