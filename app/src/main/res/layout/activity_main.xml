@@ -11,7 +11,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="16dp"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
@@ -22,7 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:entries="@array/validStates"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="30dp"
         />
 
     <EditText
@@ -39,7 +40,8 @@
         android:longClickable="true"
         android:maxLength="5"
         android:hint="Enter Zipcode"
-        android:paddingTop="10dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
         />
 
     <TextView
@@ -58,7 +60,8 @@
         android:text="Enter Birthday"
         android:width="@dimen/abc_text_size_display_1_material"
         android:layout_below="@id/ZipCode"
-        android:paddingTop="15dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         />
 
     <RadioGroup
@@ -71,7 +74,6 @@
         android:weightSum="1"
         android:paddingTop="20dp"
         >
-
 
 
         <RadioButton
@@ -103,6 +105,7 @@
         android:layout_alignEnd="@id/textView1"
         android:weightSum="1"
         android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         >
 
 
@@ -111,7 +114,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Male" />
+            android:text="Male"
+        />
 
         <RadioButton
             android:id="@+id/Female"
@@ -120,7 +124,7 @@
             android:text="Female    "
             android:layout_weight="1"
             android:layout_gravity="right"
-            />
+        />
 
     </RadioGroup>
 
@@ -131,8 +135,9 @@
         android:layout_height="wrap_content"
         android:entries="@array/validYears"
         android:layout_below="@id/gender"
-        android:paddingTop="20dp"
-        />
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+    />
 
     <TextView
         android:id="@+id/textView1"
@@ -142,7 +147,8 @@
         android:text="Medium Text"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/ZipCode"
-        android:layout_alignBottom="@+id/validStates" />
+        android:layout_alignBottom="@+id/validStates"
+    />
 
     <Spinner
         android:id="@+id/modelMakes"
@@ -150,7 +156,8 @@
         android:layout_height="wrap_content"
         android:entries="@array/validMakes"
         android:layout_below="@id/modelYears"
-        android:paddingTop="20dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
         />
 
     <Spinner
@@ -159,7 +166,8 @@
         android:layout_height="wrap_content"
         android:entries="@array/validModels"
         android:layout_below="@id/modelMakes"
-        android:paddingTop="20dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
         />
 
     <RadioGroup
@@ -197,6 +205,8 @@
         android:layout_height="wrap_content"
         android:text="Transfer Discount?"
         android:layout_below="@id/covg"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         />
 
     <CheckBox
@@ -204,7 +214,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Multi Bike Discount?"
+        android:paddingTop="20dp"
         android:layout_below="@id/transferDisc"
+        android:paddingBottom="20dp"
         />
 
     <CheckBox
@@ -213,6 +225,8 @@
         android:layout_height="wrap_content"
         android:text="POD/SBSD Discount?"
         android:layout_below="@id/multiBikeDisc"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         />
 
 
@@ -225,6 +239,7 @@
         android:layout_below="@id/podDisc"
         android:layout_alignParentStart="true"
         android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         />
 
     <Button
@@ -236,6 +251,7 @@
         android:layout_below="@id/submit"
         android:layout_alignParentStart="true"
         android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         />
 
     <Button
@@ -245,6 +261,7 @@
         android:text="Upload All Saved Quotes to iPOS"
         android:layout_below="@id/submitEvent"
         android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         />
 
     <Button

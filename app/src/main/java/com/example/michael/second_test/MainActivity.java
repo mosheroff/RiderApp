@@ -408,16 +408,23 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     //  Get Main Rate File
     private ArrayList<String> getRatePage() {
 
-        rateFileKey = "raw/" + RateState.toLowerCase() + "_t" + terrNum.toLowerCase();
         String rateBikeType = "";
-
         if (bikeType.toLowerCase().equals("sport")) {
             rateBikeType = "_sport";
         } else {
             rateBikeType = "_ns";
         }
 
-        rateFileKey = rateFileKey.concat(rateBikeType);
+        if (RateState.equals("DE")){
+           if (terrNum.equals("1")){
+               rateFileKey = "raw/" + RateState.toLowerCase() + "_t1" + rateBikeType + "_0";
+           } else {
+               rateFileKey = "raw/" + RateState.toLowerCase() + "_t1" + rateBikeType + "_10k";
+           }
+        } else {
+            rateFileKey = "raw/" + RateState.toLowerCase() + "_t" + terrNum.toLowerCase();
+            rateFileKey = rateFileKey.concat(rateBikeType);
+        }
 
         BufferedReader rateFile = new BufferedReader(new InputStreamReader(
                 getResources().openRawResource(getResources().getIdentifier(rateFileKey, "raw", getPackageName()))
@@ -627,8 +634,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             limitItemCount = 4;
         }
 
-        if (RateState.equals("VA")) {
+        if ((RateState.equals("VA"))) {
             limitPointStart = 5;
+        } else {
+            if (RateState.equals("DE")) {
+                limitPointStart = 10;
+            }
         }
 
         if (addCompColl) {
@@ -1207,8 +1218,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    requestID.setNamespace(RIDER_NAMESPACE);
                    requestID.setType(PropertyInfo.STRING_CLASS);
                    requestID.setName("RequestID");
-//                   requestID.setValue("RiderRemote-"+fileName+"-"+quoteCtr.toString());
-                   requestID.setValue("OctaneLending-132D-105112.37-174-Q12"+quoteCtr.toString());
+                   String[] tempFileName = fileName.split("/");
+                   String fileDate = tempFileName[tempFileName.length-1];
+                   requestID.setValue("RiderRemote-Evnt"+quoteLine[0]+"-"+fileDate+"-"+quoteCtr.toString());
+//                   requestID.setValue("OctaneLending-132D-105112.37-174-Q12"+quoteCtr.toString());
                    quoteInfo.addProperty(requestID);
                    PropertyInfo requestType = new PropertyInfo();
                    requestType.setNamespace(RIDER_NAMESPACE);
@@ -1242,7 +1255,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    sourceField.setNamespace(RIDER_NAMESPACE);
                    sourceField.setName("Source_Field");
                    sourceField.setType(PropertyInfo.STRING_CLASS);
-                   sourceField.setValue("Octane Lending");
+                   sourceField.setValue("RiderRemote");
                    quoteInfo.addProperty(sourceField);
                    PropertyInfo agentID = new PropertyInfo();
                    agentID.setNamespace(RIDER_NAMESPACE);
@@ -1571,6 +1584,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                        coverage4.addProperty(deductible4);
                        vehicle.addSoapObject(coverage4);
                    }
+/*
                    SoapObject coverage5 = new SoapObject(RIDER_NAMESPACE, "Coverage");
                    PropertyInfo coverageName5 = new PropertyInfo();
                    coverageName5.setNamespace(RIDER_NAMESPACE);
@@ -1591,6 +1605,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                    deductible5.setValue("N/A");
                    coverage5.addProperty(deductible5);
                    vehicle.addSoapObject(coverage5);
+*/
                    if ((!rateState.equals("MI")) && (!rateState.equals("PA")) ) {
                        SoapObject coverage6 = new SoapObject(RIDER_NAMESPACE, "Coverage");
                        PropertyInfo coverageName6 = new PropertyInfo();
@@ -1770,12 +1785,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                        riderQuoteTransport.call(RIDER_SOAP_ACTION, riderenvelope);
 //                       SoapPrimitive riderresponse = (SoapPrimitive) riderenvelope.getResponse();
 
-//                       String requestDump = riderQuoteTransport.requestDump;
-//                       String responseDump = riderQuoteTransport.responseDump;
+                       String requestDump = riderQuoteTransport.requestDump;
+                       String responseDump = riderQuoteTransport.responseDump;
 
                    } catch (Exception e1){
-//                       String requestDump = riderQuoteTransport.requestDump;
-//                       String responseDump = riderQuoteTransport.responseDump;
+                       String requestDump = riderQuoteTransport.requestDump;
+                       String responseDump = riderQuoteTransport.responseDump;
                        e1.printStackTrace();
                    }
 

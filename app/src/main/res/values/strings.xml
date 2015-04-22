@@ -6,10 +6,11 @@
     <string name="No">NO</string>
 
     <string-array name="validStates">
-        <!-- <item>DE</item>  -->
+        <item>Select State</item>
+        <item>DE</item>
         <item>IN</item>
         <item>MD</item>
-        <!--  <item>MI</item>  -->
+        <item>MI</item>
         <item>NJ</item>
         <item>OH</item>
         <item>PA</item>
