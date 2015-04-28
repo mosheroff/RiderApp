@@ -1,0 +1,81 @@
+Age 35 & older:	APPLICANT MUST BE 35 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENT AND /OR 3 TICKETS IN THE LAST THREE YEARS						
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+1-370	110	63	53	61	73	84	130
+371-575	133	76	64	75	88	102	161
+576-750	222	124	106	84	100	119	188
+571-950	261	145	125	99	120	143	237
+951-1210	412	229	198	114	139	167	280
+1211-1400	460	256	221	129	157	190	314
+1401 & Over	472	262	227	138	167	202	329
+Mopeds	N/A			61	73	84	130
+							
+Age 30-34:	APPLICANT MUST BE 30 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENT AND /OR 3 TICKETS IN THE LAST THREE YEARS						
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+1-370	140	80	67	67	78	91	143
+371-575	170	96	81	81	95	112	179
+576-750	282	157	135	92	110	129	207
+571-950	332	185	159	107	130	157	261
+951-1210	523	291	252	124	152	184	310
+1211-1400	585	325	281	141	172	208	349
+1401 & Over	598	332	288	149	184	223	365
+Mopeds	N/A			67	78	91	143
+							
+Age 26-29:	APPLICANT MUST BE 26 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENTS AND /OR 3 TICKETS IN THE LAST THREE YEARS						
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+1-370	146	83	70	67	78	92	145
+371-575	177	100	85	82	96	114	180
+576-750	295	164	142	93	111	132	211
+571-950	347	193	167	109	131	157	265
+951-1210	549	305	264	125	153	185	313
+1211-1400	613	340	295	142	175	212	353
+1401 & Over	628	348	302	154	186	226	370
+Mopeds	N/A			67	78	92	145
+							
+Age 21-25:	APPLICANT MUST BE 21 OR OLDER WHEN POLICY STARTS. MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENT AND /OR 2 TICKETS IN THE LAST THREE YEARS						
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+1-370	384	220	184	134	169	207	363
+371-575	461	262	221	172	217	267	467
+576-750	757	424	364	204	254	316	550
+571-950	888	495	427	244	311	390	706
+951-1210	1400	780	673	291	372	467	849
+1211-1400	1563	869	751	337	429	538	961
+1401 & Over	1600	891	769	361	461	578	1008
+Mopeds	N/A			134	169	207	363
+							
+Age 20 & under:	MOTOR VEHICLE RECORD CANNOT EXCEED 1 ACCIDENT AND /OR 2 TICKETS IN THE LAST THREE YEARS. APPLICANTS 20 AND YOUNGER WISHING TO INSURE A MOTORCYCLE 501CC OR LARGER ARE REQUIRED TO HAVE AN  INDIANA MOTORCYCLE DRIVER'S LICENSE. A MOTORCYCLE PERMIT  FOR MOTORCYCLES 500CC OR SMALLER						
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+1-370	611	349	293	210	270	337	608
+371-575	737	418	354	274	350	439	784
+576-750	1222	683	587	326	415	522	930
+571-950	1437	800	690	396	513	650	1201
+951-1210	2269	1261	1090	474	616	781	1446
+1211-1400	2533	1407	1218	553	715	904	1641
+1401 & Over	2594	1441	1247	598	769	973	1722
+Mopeds	N/A			210	270	337	608
+							
+							
+							
+AVAILABLE COVERAGES			DISCOUNTS				
+Basic - The Basic coverage package includes Liability coverage with the limits of your choice without UM/UIM*.			"? A 25% PREFERRED OPERATOR DISCOUNT applies to all applicants, age 26 and over with a clean driving record**, who are insuring a non-sport / non-high performance motorcycle, 576cc and over, with the Premium or Premium Plus Package."				
+							
+Call or go online for rates.							
+Standard - The Standard coverage package includes Liability coverage with the limits of your choice and UM/UIM.							
+							
+"Premium - The Premium coverage package includes Liability coverage with the limits of your choice, UM/UIM and Comprehensive without Collision coverage."			? A 10% TRANSFER DISCOUNT applies to all applicants with a non-sport / non-high performance bike transferring coverage from another insurance company to Rider with no more than a 30-day lapse in coverage.				
+							
+							
+Call or go online for rates.							
+"Premium Plus (P1, P2, P3) - The Premium Plus coverage package includes Liability coverage with the limits of your choice, UM/UIM and Comprehensive with Collision coverage."			? A 10% MULTIPLE BIKE DISCOUNT applies to all applicants who have more than one covered vehicle on their policy at the same time.				
+							
+			"**A clean driving record is defined as no moving violations that carry motor vehicle points and are not drug or alcohol related, and no at-fault accidents in the past three years. Rider offers Accident and Ticket Forgiveness for a minor violation (1 two-point violation) or accident (1 at-fault accident with a payout of less than $2000)."				
+							
+*UM/UIM - Uninsured Motorist Coverage / Underinsured Motorist Coverage							
+							
+Rates are based on a $500 deductible.							
+							
+Effective 3/1/2015							

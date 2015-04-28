@@ -1,0 +1,62 @@
+Age 35 & older:							
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+551-750	533	320	267	109	133	160	274
+751-950	574	348	287	122	148	179	296
+951-1210	1319	798	659	138	169	205	348
+1211-1400	1381	835	690	154	188	229	382
+1401 & Over	1386	838	693	155	189	232	387
+							
+Age 30-34:							
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+551-750	678	408	338	118	145	177	303
+751-950	730	442	365	133	162	197	330
+951-1210	1678	1016	839	152	186	228	388
+1211-1400	1756	1062	878	168	207	254	426
+1401 & Over	1762	1067	881	170	209	255	431
+							
+Age 26-29:							
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+551-750	709	427	355	120	146	178	306
+751-950	762	462	382	133	163	198	333
+951-1210	1755	1063	877	153	188	229	391
+1211-1400	1836	1111	918	171	210	256	431
+1401 & Over	1844	1115	922	172	212	259	436
+							
+Age 21-25:							
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+551-750	1814	1094	907	279	358	452	833
+751-950	1971	1200	985	319	407	511	908
+951-1210	4523	2748	2261	371	476	599	1079
+1211-1400	4729	2870	2364	417	533	671	1190
+1401 & Over	4747	2882	2373	421	539	678	1202
+							
+Age 20 & under:							
+Displacement	P1	P2	P3	Limits of Liability			
+(CC's)	2015 & 2014 models	2013 & 2012 models	2011 & older models	25/50/10	50/100/25	100/300/50	250/500/100
+551-750	2936	1768	1468	456	595	757	1419
+751-950	3169	1926	1584	526	679	861	1552
+951-1210	7284	4416	3643	614	798	1012	1845
+1211-1400	7620	4615	3810	693	897	1135	2040
+1401 & Over	7649	4634	3825	700	905	1147	2058
+							
+							
+AVAILABLE COVERAGES			DISCOUNTS				
+Basic - The Basic coverage package includes Liability coverage with the limits of your choice without UM/UIM*.			"? A 15% PREFERRED OPERATOR DISCOUNT applies to all applicants, age 35 and over with a clean driving record**, who are insuring a sport /high performance motorcycle, 551cc and over, with the Premium or Premium Plus Package."				
+							
+Call or go online for rates.							
+Standard - The Standard coverage package includes Liability coverage with the limits of your choice and UM/UIM.							
+			? A 10% MULTIPLE BIKE DISCOUNT applies to all applicants who have more than one covered vehicle on their policy at the same time.				
+"Premium - The Premium coverage package includes Liability coverage with the limits of your choice, UM/UIM and Comprehensive without Collision coverage."							
+Call or go online for rates.			"**A clean driving record is defined as no moving violations that carry motor vehicle points and are not drug or alcohol related, and no at-fault accidents in the past three years. "				
+"Premium Plus (P1, P2, P3) - The Premium Plus coverage package includes Liability coverage with the limits of your choice, UM/UIM and Comprehensive with Collision coverage."							
+							
+							
+*UM/UIM - Uninsured Motorist Coverage / Underinsured Motorist Coverage							
+							
+Rates are based on a $750 deductible.							
+							
+Effective 3/1/2015							
